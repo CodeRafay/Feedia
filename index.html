@@ -3,136 +3,437 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Feedia</title>
+  <title>Feedia - Local Food Sharing Platform</title>
   <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <!-- Custom CSS -->
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-success">
-    <div class="container">
-      <a class="navbar-brand" href="#">Feedia</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item">
-            <a class="nav-link active" href="#home">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#features">Features</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#about">About</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#contact">Contact</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link btn btn-light text-success" href="#register">Register</a>
-          </li>
-        </ul>
+  <!-- Header -->
+  <header class="fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white">
+      <div class="container">
+        <a class="navbar-brand" href="#">
+          <div class="feedia-logo">
+            <span class="logo-text">Feedia</span>
+            <span class="logo-icon"><i class="fas fa-seedling"></i></span>
+          </div>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link active" href="#">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#how-it-works">How It Works</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#features">Features</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#testimonials">Testimonials</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#pricing">Pricing</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#contact">Contact</a>
+            </li>
+          </ul>
+          <a href="#" class="btn btn-orange ms-lg-3">Join the Movement</a>
+        </div>
       </div>
-    </div>
-  </nav>
+    </nav>
+  </header>
 
   <!-- Hero Section -->
-  <section id="home" class="hero-section py-5">
+  <section id="hero" class="hero-section">
     <div class="container">
       <div class="row align-items-center">
-        <div class="col-md-6">
-          <h1 class="display-4 fw-bold">Fight Hunger, Reduce Waste</h1>
-          <p class="lead">Join our platform to share excess food with those in need. Together, we can make a difference!</p>
-          <a href="#register" class="btn btn-success btn-lg">Get Started</a>
+        <div class="col-lg-6">
+          <h1 class="hero-title">Fight Hunger, Reduce Waste – Together.</h1>
+          <p class="hero-text">Feedia connects food donors, pickup services, and beneficiaries to create a sustainable, compassionate community.</p>
+          <div class="hero-buttons">
+            <a href="#" class="btn btn-orange me-2">Get Started</a>
+            <a href="#" class="btn btn-outline-green">Learn More</a>
+          </div>
         </div>
-        <div class="col-md-6">
-          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTi30gAQNweVKb-piPfi5SkOFOCayKw9IXblw&s" alt="Food Sharing" class="img-fluid hero-image rounded">
+        <div class="col-lg-6">
+          <img src="https://via.placeholder.com/600x400" alt="Food sharing community" class="img-fluid rounded hero-image">
         </div>
       </div>
+    </div>
+    <div class="section-divider">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 100">
+        <path fill="#ffffff" fill-opacity="1" d="M0,64L80,58.7C160,53,320,43,480,48C640,53,800,75,960,74.7C1120,75,1280,53,1360,42.7L1440,32L1440,100L1360,100C1280,100,1120,100,960,100C800,100,640,100,480,100C320,100,160,100,80,100L0,100Z"></path>
+      </svg>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section id="how-it-works" class="section-padding">
+    <div class="section-header">
+      <div class="container text-center">
+        <div class="section-badge">Our Process</div>
+        <h2 class="section-title">How Feedia Works</h2>
+        <p class="section-subtitle">Our platform makes food sharing simple, efficient, and rewarding for everyone involved.</p>
+      </div>
+    </div>
+    
+    <div class="container">
+      <div class="row mt-5">
+        <div class="col-md-4 mb-4 mb-md-0">
+          <div class="step-item">
+            <div class="step-icon">
+              <i class="fas fa-box"></i>
+            </div>
+            <span class="step-number">Step 1</span>
+            <h3 class="step-title">Donors List Food</h3>
+            <p class="step-description">Register and list surplus food with details, images, and pickup instructions.</p>
+          </div>
+        </div>
+        <div class="col-md-4 mb-4 mb-md-0">
+          <div class="step-item">
+            <div class="step-icon">
+              <i class="fas fa-truck"></i>
+            </div>
+            <span class="step-number">Step 2</span>
+            <h3 class="step-title">Pickup Services Collect</h3>
+            <p class="step-description">Drivers or volunteers collect and deliver food to designated locations.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="step-item">
+            <div class="step-icon">
+              <i class="fas fa-users"></i>
+            </div>
+            <span class="step-number">Step 3</span>
+            <h3 class="step-title">Beneficiaries Receive</h3>
+            <p class="step-description">Food is distributed to those in need, reducing waste and fighting hunger.</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="text-center mt-5">
+        <a href="#" class="btn btn-green">Learn More</a>
+      </div>
+    </div>
+    <div class="section-divider">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 100">
+        <path fill="#f0f7f0" fill-opacity="1" d="M0,32L80,42.7C160,53,320,75,480,74.7C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,100L1360,100C1280,100,1120,100,960,100C800,100,640,100,480,100C320,100,160,100,80,100L0,100Z"></path>
+      </svg>
     </div>
   </section>
 
   <!-- Features Section -->
-  <section id="features" class="features-section py-5">
+  <section id="features" class="section-padding bg-light-green">
+    <div class="section-header">
+      <div class="container text-center">
+        <div class="section-badge">Benefits</div>
+        <h2 class="section-title">Why Choose Feedia?</h2>
+        <p class="section-subtitle">Our platform offers powerful features to make food sharing efficient and rewarding.</p>
+      </div>
+    </div>
+    
     <div class="container">
-      <h2 class="text-center mb-5">Features</h2>
-      <div class="row">
-        <div class="col-md-4 text-center">
-          <div class="card mb-4">
+      <div class="row mt-5">
+        <div class="col-md-6 col-lg-3 mb-4">
+          <div class="card feature-card h-100">
             <div class="card-body">
-              <h5 class="card-title">Food Donation Listings</h5>
-              <p class="card-text">Easily list excess food with details like type, quantity, and expiration time.</p>
+              <div class="feature-icon">
+                <i class="fas fa-clipboard-list"></i>
+              </div>
+              <h3 class="feature-title">Food Donation Listings</h3>
+              <p class="feature-description">Easily list surplus food with descriptions and images for quick distribution.</p>
             </div>
           </div>
         </div>
-        <div class="col-md-4 text-center">
-          <div class="card mb-4">
+        <div class="col-md-6 col-lg-3 mb-4">
+          <div class="card feature-card h-100">
             <div class="card-body">
-              <h5 class="card-title">Real-Time Pickups</h5>
-              <p class="card-text">Coordinate food pickups with nearby drivers or volunteers.</p>
+              <div class="feature-icon">
+                <i class="fas fa-map-marker-alt"></i>
+              </div>
+              <h3 class="feature-title">Real-Time Pickups</h3>
+              <p class="feature-description">Efficient, location-based food collection with route optimization.</p>
             </div>
           </div>
         </div>
-        <div class="col-md-4 text-center">
-          <div class="card mb-4">
+        <div class="col-md-6 col-lg-3 mb-4">
+          <div class="card feature-card h-100">
             <div class="card-body">
-              <h5 class="card-title">Drop-Off Points</h5>
-              <p class="card-text">Find nearby shelters or food banks to deliver donations.</p>
+              <div class="feature-icon">
+                <i class="fas fa-chart-line"></i>
+              </div>
+              <h3 class="feature-title">Transparency & Tracking</h3>
+              <p class="feature-description">Real-time updates on food availability and delivery status.</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 col-lg-3 mb-4">
+          <div class="card feature-card h-100">
+            <div class="card-body">
+              <div class="feature-icon">
+                <i class="fas fa-heart"></i>
+              </div>
+              <h3 class="feature-title">Community Engagement</h3>
+              <p class="feature-description">Gamification, reviews, and success stories to build a thriving community.</p>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </section>
-
-  <!-- About Section -->
-  <section id="about" class="about-section bg-light py-5">
-    <div class="container">
-      <h2 class="text-center mb-5">About Us</h2>
-      <div class="row">
-        <div class="col-md-6">
-          <p class="lead">Feedia is a community-driven platform designed to tackle food waste and hunger. By connecting donors, pickup services, and beneficiaries, we ensure that no food goes to waste.</p>
-        </div>
-        <div class="col-md-6">
-          <img src="https://media.istockphoto.com/id/1498170916/photo/a-couple-is-taking-a-bag-of-food-at-the-food-and-clothes-bank.jpg?s=612x612&w=0&k=20&c=0fnD_g46lvoZ5NdzX5zYOSM4PzM95ezfs5uMe9D1QKs=" alt="About Us" class="img-fluid rounded">
-        </div>
-      </div>
+    <div class="section-divider">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 100">
+        <path fill="#ffffff" fill-opacity="1" d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,53.3C1120,53,1280,75,1360,85.3L1440,96L1440,100L1360,100C1280,100,1120,100,960,100C800,100,640,100,480,100C320,100,160,100,80,100L0,100Z"></path>
+      </svg>
     </div>
   </section>
 
-  <!-- Contact Section -->
-  <section id="contact" class="contact-section py-5">
+  <!-- Testimonials Section -->
+  <section id="testimonials" class="section-padding testimonials-section">
+    <div class="section-header">
+      <div class="container text-center">
+        <div class="section-badge">Testimonials</div>
+        <h2 class="section-title">What Our Community Says</h2>
+        <p class="section-subtitle">Hear from the people who are making a difference with Feedia.</p>
+      </div>
+    </div>
+    
     <div class="container">
-      <h2 class="text-center mb-5">Contact Us</h2>
-      <form>
-        <div class="mb-3">
-          <label for="name" class="form-label">Name</label>
-          <input type="text" class="form-control" id="name" required>
+      <div id="testimonialCarousel" class="carousel slide mt-5" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <div class="testimonial-item">
+              <div class="testimonial-icon">
+                <i class="fas fa-quote-left"></i>
+              </div>
+              <p class="testimonial-text">Feedia has transformed our restaurant's approach to surplus food. Instead of throwing away perfectly good meals, we can now easily connect with people who need it.</p>
+              <div class="testimonial-author">
+                <img src="https://via.placeholder.com/80x80" alt="Sarah Johnson" class="testimonial-image">
+                <div class="testimonial-info">
+                  <h4>Sarah Johnson</h4>
+                  <p>Restaurant Owner</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <div class="testimonial-item">
+              <div class="testimonial-icon">
+                <i class="fas fa-quote-left"></i>
+              </div>
+              <p class="testimonial-text">As a volunteer driver, Feedia makes it simple to find pickup opportunities in my area. The app's route optimization saves me time and helps me deliver more food.</p>
+              <div class="testimonial-author">
+                <img src="https://via.placeholder.com/80x80" alt="Michael Chen" class="testimonial-image">
+                <div class="testimonial-info">
+                  <h4>Michael Chen</h4>
+                  <p>Volunteer Driver</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <div class="testimonial-item">
+              <div class="testimonial-icon">
+                <i class="fas fa-quote-left"></i>
+              </div>
+              <p class="testimonial-text">Our food bank has seen a 40% increase in donations since joining Feedia. The platform connects us with businesses we never had access to before.</p>
+              <div class="testimonial-author">
+                <img src="https://via.placeholder.com/80x80" alt="Elena Rodriguez" class="testimonial-image">
+                <div class="testimonial-info">
+                  <h4>Elena Rodriguez</h4>
+                  <p>Food Bank Coordinator</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="carousel-item">
+            <div class="testimonial-item">
+              <div class="testimonial-icon">
+                <i class="fas fa-quote-left"></i>
+              </div>
+              <p class="testimonial-text">Feedia has transformed our community! The platform makes it easy to coordinate food sharing and has significantly reduced waste in our neighborhood.</p>
+              <div class="testimonial-author">
+                <img src="https://via.placeholder.com/80x80" alt="John Smith" class="testimonial-image">
+                <div class="testimonial-info">
+                  <h4>John Smith</h4>
+                  <p>Community Organizer</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="mb-3">
-          <label for="email" class="form-label">Email</label>
-          <input type="email" class="form-control" id="email" required>
+        <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+        <div class="carousel-indicators">
+          <button type="button" data-bs-target="#testimonialCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+          <button type="button" data-bs-target="#testimonialCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+          <button type="button" data-bs-target="#testimonialCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+          <button type="button" data-bs-target="#testimonialCarousel" data-bs-slide-to="3" aria-label="Slide 4"></button>
         </div>
-        <div class="mb-3">
-          <label for="message" class="form-label">Message</label>
-          <textarea class="form-control" id="message" rows="5" required></textarea>
+      </div>
+    </div>
+    <div class="section-divider">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 100">
+        <path fill="#ffffff" fill-opacity="1" d="M0,32L80,37.3C160,43,320,53,480,58.7C640,64,800,64,960,58.7C1120,53,1280,43,1360,37.3L1440,32L1440,100L1360,100C1280,100,1120,100,960,100C800,100,640,100,480,100C320,100,160,100,80,100L0,100Z"></path>
+      </svg>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section id="pricing" class="section-padding">
+    <div class="section-header">
+      <div class="container text-center">
+        <div class="section-badge">Pricing</div>
+        <h2 class="section-title">Join Feedia Today</h2>
+        <p class="section-subtitle">Choose the plan that works best for you or your organization.</p>
+      </div>
+    </div>
+    
+    <div class="container">
+      <div class="row mt-5">
+        <div class="col-md-4 mb-4">
+          <div class="card pricing-card h-100">
+            <div class="card-body">
+              <h3 class="pricing-title">Free Plan</h3>
+              <p class="pricing-subtitle">Basic features for individuals</p>
+              <div class="pricing-price">$0<span>/month</span></div>
+              <ul class="pricing-features">
+                <li><i class="fas fa-check"></i> List up to 5 food donations</li>
+                <li><i class="fas fa-check"></i> Basic pickup scheduling</li>
+                <li><i class="fas fa-check"></i> Community forum access</li>
+              </ul>
+              <a href="#" class="btn btn-green btn-block">Sign Up Now</a>
+            </div>
+          </div>
         </div>
-        <button type="submit" class="btn btn-success">Submit</button>
-      </form>
+        <div class="col-md-4 mb-4">
+          <div class="card pricing-card pricing-popular h-100">
+            <div class="popular-badge">Most Popular</div>
+            <div class="card-body">
+              <h3 class="pricing-title">Pro Plan</h3>
+              <p class="pricing-subtitle">Advanced features for businesses</p>
+              <div class="pricing-price">$29<span>/month</span></div>
+              <ul class="pricing-features">
+                <li><i class="fas fa-check"></i> Unlimited food donations</li>
+                <li><i class="fas fa-check"></i> Advanced pickup scheduling</li>
+                <li><i class="fas fa-check"></i> Analytics dashboard</li>
+                <li><i class="fas fa-check"></i> Priority support</li>
+              </ul>
+              <a href="#" class="btn btn-orange btn-block">Sign Up Now</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4 mb-4">
+          <div class="card pricing-card h-100">
+            <div class="card-body">
+              <h3 class="pricing-title">Enterprise Plan</h3>
+              <p class="pricing-subtitle">Custom solutions for large operations</p>
+              <div class="pricing-price">Custom<span>/month</span></div>
+              <ul class="pricing-features">
+                <li><i class="fas fa-check"></i> All Pro features</li>
+                <li><i class="fas fa-check"></i> Custom integration</li>
+                <li><i class="fas fa-check"></i> Dedicated account manager</li>
+                <li><i class="fas fa-check"></i> 24/7 premium support</li>
+              </ul>
+              <a href="#" class="btn btn-green btn-block">Contact Sales</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="section-divider">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 100">
+        <path fill="#2e8b57" fill-opacity="1" d="M0,96L80,85.3C160,75,320,53,480,53.3C640,53,800,75,960,80C1120,85,1280,75,1360,69.3L1440,64L1440,100L1360,100C1280,100,1120,100,960,100C800,100,640,100,480,100C320,100,160,100,80,100L0,100Z"></path>
+      </svg>
+    </div>
+  </section>
+
+  <!-- Final CTA Section -->
+  <section id="cta" class="cta-section">
+    <div class="container text-center">
+      <h2 class="cta-title">Be Part of the Solution</h2>
+      <p class="cta-text">Join Feedia today and help reduce food waste while fighting hunger in your community.</p>
+      <a href="#" class="btn btn-light-green btn-lg">Sign Up Now</a>
+    </div>
+    <div class="section-divider">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 100">
+        <path fill="#f8f9fa" fill-opacity="1" d="M0,32L80,37.3C160,43,320,53,480,48C640,43,800,21,960,21.3C1120,21,1280,43,1360,53.3L1440,64L1440,100L1360,100C1280,100,1120,100,960,100C800,100,640,100,480,100C320,100,160,100,80,100L0,100Z"></path>
+      </svg>
     </div>
   </section>
 
   <!-- Footer -->
-  <footer class="bg-success text-white text-center py-3">
-    <p>&copy; 2023 Feedia. All rights reserved.</p>
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 mb-4 mb-lg-0">
+          <div class="feedia-logo footer-logo mb-3">
+            <span class="logo-text">Feedia</span>
+            <span class="logo-icon"><i class="fas fa-seedling"></i></span>
+          </div>
+          <p class="footer-text">Connecting communities to reduce food waste and fight hunger.</p>
+          <div class="social-icons">
+            <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-8">
+          <div class="row">
+            <div class="col-md-4 mb-4 mb-md-0">
+              <h3 class="footer-heading">Company</h3>
+              <ul class="footer-links">
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Careers</a></li>
+                <li><a href="#">Contact</a></li>
+              </ul>
+            </div>
+            <div class="col-md-4 mb-4 mb-md-0">
+              <h3 class="footer-heading">Resources</h3>
+              <ul class="footer-links">
+                <li><a href="#">Blog</a></li>
+                <li><a href="#">Community</a></li>
+                <li><a href="#">Support</a></li>
+              </ul>
+            </div>
+            <div class="col-md-4">
+              <h3 class="footer-heading">Legal</h3>
+              <ul class="footer-links">
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Terms of Service</a></li>
+                <li><a href="#">Cookie Policy</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="copyright">© <span id="currentYear"></span> Feedia. All rights reserved.</p>
+      </div>
+    </div>
   </footer>
 
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- Custom JS -->
+  <!-- Bootstrap JS Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Custom JavaScript -->
   <script src="script.js"></script>
 </body>
 </html>
+
