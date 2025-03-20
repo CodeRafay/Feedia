@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up - Feedia</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Open+Sans:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Additional styles for signup page */
+    .signup-section {
+      padding: 140px 0 80px;
+      background: linear-gradient(to bottom, var(--green-light), var(--white));
+    }
+
+    .signup-card {
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    .signup-header {
+      background-color: var(--green-primary);
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .signup-body {
+      padding: 30px;
+    }
+
+    .form-step {
+      display: none;
+    }
+
+    .form-step.active {
+      display: block;
+    }
+
+    .user-type-card {
+      border: 2px solid #e9ecef;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .user-type-card:hover {
+      border-color: var(--green-primary);
+      transform: translateY(-5px);
+    }
+
+    .user-type-card.selected {
+      border-color: var(--green-primary);
+      background-color: var(--green-light);
+    }
+
+    .user-type-icon {
+      font-size: 2rem;
+      color: var(--green-primary);
+      margin-bottom: 15px;
+    }
+
+    .form-navigation {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+    }
+
+    .progress-container {
+      margin: 30px 0;
+    }
+
+    .progress {
+      height: 8px;
+      background-color: #e9ecef;
+    }
+
+    .progress-bar {
+      background-color: var(--green-primary);
+    }
+
+    .form-check-input:checked {
+      background-color: var(--green-primary);
+      border-color: var(--green-primary);
+    }
+
+    .invalid-feedback {
+      display: none;
+      color: #dc3545;
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+    }
+
+    .was-validated .form-control:invalid ~ .invalid-feedback {
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white">
+      <div class="container">
+        <a class="navbar-brand" href="index.html">
+          <div class="feedia-logo">
+            <span class="logo-text">Feedia</span>
+            <span class="logo-icon"><i class="fas fa-seedling"></i></span>
+          </div>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="index.html#how-it-works">How It Works</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="index.html#features">Features</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="index.html#testimonials">Testimonials</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="index.html#pricing">Pricing</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="index.html#contact">Contact</a>
+            </li>
+          </ul>
+          <a href="signup.html" class="btn btn-orange ms-lg-3 active">Join the Movement</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Signup Section -->
+  <section class="signup-section">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="card signup-card">
+            <div class="signup-header">
+              <h2>Join Feedia</h2>
+              <p>Create your account and start making a difference</p>
+            </div>
+            <div class="signup-body">
+              <div class="progress-container">
+                <div class="progress">
+                  <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <div class="d-flex justify-content-between mt-2">
+                  <span class="step-label active">Account</span>
+                  <span class="step-label">User Type</span>
+                  <span class="step-label">Details</span>
+                  <span class="step-label">Complete</span>
+                </div>
+              </div>
+
+              <form id="signupForm" novalidate>
+                <!-- Step 1: Basic Account Information -->
+                <div class="form-step active" id="step1">
+                  <h3 class="mb-4">Create Your Account</h3>
+                  
+                  <div class="mb-3">
+                    <label for="fullName" class="form-label">Full Name</label>
+                    <input type="text" class="form-control" id="fullName" required>
+                    <div class="invalid-feedback">Please enter your full name</div>
+                  </div>
+                  
+                  <div class="mb-3">
+                    <label for="email" class="form-label">Email Address</label>
+                    <input type="email" class="form-control" id="email" required>
+                    <div class="invalid-feedback">Please enter a valid email address</div>
+                  </div>
+                  
+                  <div class="mb-3">
+                    <label for="phone" class="form-label">Phone Number</label>
+                    <input type="tel" class="form-control" id="phone" required>
+                    <div class="invalid-feedback">Please enter your phone number</div>
+                  </div>
+                  
+                  <div class="mb-3">
+                    <label for="username" class="form-label">Username (Optional)</label>
+                    <input type="text" class="form-control" id="username">
+                  </div>
+                  
+                  <div class="mb-3">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="password" required>
+                    <div class="invalid-feedback">Password must be at least 8 characters</div>
+                  </div>
+                  
+                  <div class="mb-3">
+                    <label for="confirmPassword" class="form-label">Confirm Password</label>
+                    <input type="password" class="form-control" id="confirmPassword" required>
+                    <div class="invalid-feedback">Passwords do not match</div>
+                  </div>
+
+                  <div class="form-navigation">
+                    <div></div> <!-- Empty div for spacing -->
+                    <button type="button" class="btn btn-green next-step">Next: Select User Type</button>
+                  </div>
+                </div>
+
+                <!-- Step 2: User Type Selection -->
+                <div class="form-step" id="step2">
+                  <h3 class="mb-4">Select Your User Type</h3>
+                  <p class="text-muted mb-4">Choose the role that best describes how you'll use Feedia</p>
+                  
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <div class="user-type-card" data-user-type="donor">
+                        <div class="text-center">
+                          <div class="user-type-icon">
+                            <i class="fas fa-utensils"></i>
+                          </div>
+                          <h4>Donor</h4>
+                          <p class="text-muted">Restaurants, Hotels, Individuals with food to share</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <div class="user-type-card" data-user-type="pickup">
+                        <div class="text-center">
+                          <div class="user-type-icon">
+                            <i class="fas fa-truck"></i>
+                          </div>
+                          <h4>Pickup Service</h4>
+                          <p class="text-muted">Drivers, Volunteers who transport food</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <div class="user-type-card" data-user-type="beneficiary">
+                        <div class="text-center">
+                          <div class="user-type-icon">
+                            <i class="fas fa-hands-helping"></i>
+                          </div>
+                          <h4>Beneficiary</h4>
+                          <p class="text-muted">Charities, Shelters, Individuals in need</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <div class="user-type-card" data-user-type="admin">
+                        <div class="text-center">
+                          <div class="user-type-icon">
+                            <i class="fas fa-user-shield"></i>
+                          </div>
+                          <h4>Admin</h4>
+                          <p class="text-muted">Platform administrators and managers</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <input type="hidden" id="userType" required>
+                  <div class="invalid-feedback d-block" id="userTypeError" style="display: none !important;">Please select a user type</div>
+
+                  <div class="form-navigation">
+                    <button type="button" class="btn btn-outline-green prev-step">Back</button>
+                    <button type="button" class="btn btn-green next-step">Next: Additional Details</button>
+                  </div>
+                </div>
+
+                <!-- Step 3: Role-Specific Information -->
+                <div class="form-step" id="step3">
+                  <!-- Donor Fields (initially hidden) -->
+                  <div class="role-fields" id="donorFields" style="display: none;">
+                    <h3 class="mb-4">Donor Information</h3>
+                    
+                    <div class="mb-3">
+                      <label for="businessName" class="form-label">Business/Organization Name (if applicable)</label>
+                      <input type="text" class="form-control" id="businessName">
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label for="donorAddress" class="form-label">Address/Location (for food pickup)</label>
+                      <textarea class="form-control" id="donorAddress" rows="3" required></textarea>
+                      <div class="invalid-feedback">Please enter your address for food pickup</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label for="foodType" class="form-label">Type of Food Usually Donated</label>
+                      <select class="form-select" id="foodType" multiple required>
+                        <option value="bakery">Bakery Items</option>
+                        <option value="cooked">Cooked Meals</option>
+                        <option value="produce">Fresh Produce</option>
+                        <option value="canned">Canned/Packaged Foods</option>
+                        <option value="dairy">Dairy Products</option>
+                        <option value="other">Other</option>
+                      </select>
+                      <div class="invalid-feedback">Please select at least one food type</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label for="pickupTime" class="form-label">Preferred Pickup Time (Optional)</label>
+                      <select class="form-select" id="pickupTime">
+                        <option value="">Select preferred time</option>
+                        <option value="morning">Morning (8am - 12pm)</option>
+                        <option value="afternoon">Afternoon (12pm - 5pm)</option>
+                        <option value="evening">Evening (5pm - 9pm)</option>
+                        <option value="flexible">Flexible</option>
+                      </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label for="donationPolicies" class="form-label">Any Donation Policies/Requirements?</label>
+                      <textarea class="form-control" id="donationPolicies" rows="3" placeholder="E.g., packaging, labeling, minimum quantities"></textarea>
+                    </div>
+                  </div>
+
+                  <!-- Pickup Service Fields (initially hidden) -->
+                  <div class="role-fields" id="pickupFields" style="display: none;">
+                    <h3 class="mb-4">Pickup Service Information</h3>
+                    
+                    <div class="mb-3">
+                      <label for="vehicleType" class="form-label">Vehicle Type & Capacity</label>
+                      <select class="form-select" id="vehicleType" required>
+                        <option value="">Select vehicle type</option>
+                        <option value="car">Car (Small capacity)</option>
+                        <option value="suv">SUV/Van (Medium capacity)</option>
+                        <option value="truck">Truck (Large capacity)</option>
+                        <option value="bike">Bike/Scooter (Very small capacity)</option>
+                        <option value="other">Other</option>
+                      </select>
+                      <div class="invalid-feedback">Please select your vehicle type</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label class="form-label">Availability Schedule</label>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="monday">
+                            <label class="form-check-label" for="monday">Monday</label>
+                          </div>
+                          <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="tuesday">
+                            <label class="form-check-label" for="tuesday">Tuesday</label>
+                          </div>
+                          <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="wednesday">
+                            <label class="form-check-label" for="wednesday">Wednesday</label>
+                          </div>
+                          <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="thursday">
+                            <label class="form-check-label" for="thursday">Thursday</label>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="friday">
+                            <label class="form-check-label" for="friday">Friday</label>
+                          </div>
+                          <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" id="saturday">
+                            <label class="form-check-label" for="saturday">Saturday</label>
+                          </div>
+                          <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="sunday">
+                            <label class="form-check-label" for="sunday">Sunday</label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label for="preferredAreas" class="form-label">Preferred Areas for Pickup</label>
+                      <textarea class="form-control" id="preferredAreas" rows="2" required placeholder="E.g., Downtown, North Side, etc."></textarea>
+                      <div class="invalid-feedback">Please enter your preferred pickup areas</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label class="form-label">Willing to Deliver to Homes?</label>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="homeDelivery" id="homeDeliveryYes" value="yes">
+                        <label class="form-check-label" for="homeDeliveryYes">Yes</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="homeDelivery" id="homeDeliveryNo" value="no">
+                        <label class="form-check-label" for="homeDeliveryNo">No</label>
+                      </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label for="driversLicense" class="form-label">Driver's License Verification (Optional)</label>
+                      <input type="file" class="form-control" id="driversLicense">
+                      <small class="text-muted">Upload a photo of your driver's license for verification</small>
+                    </div>
+                  </div>
+
+                  <!-- Beneficiary Fields (initially hidden) -->
+                  <div class="role-fields" id="beneficiaryFields" style="display: none;">
+                    <h3 class="mb-4">Beneficiary Information</h3>
+                    
+                    <div class="mb-3">
+                      <label for="orgName" class="form-label">Organization Name (if a charity or shelter)</label>
+                      <input type="text" class="form-control" id="orgName">
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label for="beneficiaryAddress" class="form-label">Address/Preferred Drop-Off Location</label>
+                      <textarea class="form-control" id="beneficiaryAddress" rows="3" required></textarea>
+                      <div class="invalid-feedback">Please enter your address for food delivery</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label for="foodNeeded" class="form-label">Type of Food Needed</label>
+                      <select class="form-select" id="foodNeeded" multiple required>
+                        <option value="any">Any Food</option>
+                        <option value="vegetarian">Vegetarian</option>
+                        <option value="vegan">Vegan</option>
+                        <option value="halal">Halal</option>
+                        <option value="kosher">Kosher</option>
+                        <option value="nonperishable">Non-Perishable</option>
+                        <option value="fresh">Fresh Produce</option>
+                        <option value="prepared">Prepared Meals</option>
+                      </select>
+                      <div class="invalid-feedback">Please select at least one food type</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label for="frequency" class="form-label">How Often Do You Need Food?</label>
+                      <select class="form-select" id="frequency" required>
+                        <option value="">Select frequency</option>
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="biweekly">Bi-Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="occasionally">Occasionally</option>
+                      </select>
+                      <div class="invalid-feedback">Please select a frequency</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label for="proofEligibility" class="form-label">Proof of Eligibility (if required)</label>
+                      <input type="file" class="form-control" id="proofEligibility">
+                      <small class="text-muted">Upload shelter registration, ID verification, or other documentation if applicable</small>
+                    </div>
+                  </div>
+
+                  <!-- Admin Fields (initially hidden) -->
+                  <div class="role-fields" id="adminFields" style="display: none;">
+                    <h3 class="mb-4">Admin Information</h3>
+                    
+                    <div class="mb-3">
+                      <label for="adminPosition" class="form-label">Position/Role</label>
+                      <input type="text" class="form-control" id="adminPosition" required>
+                      <div class="invalid-feedback">Please enter your position</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label for="adminDepartment" class="form-label">Department</label>
+                      <input type="text" class="form-control" id="adminDepartment" required>
+                      <div class="invalid-feedback">Please enter your department</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label for="adminResponsibilities" class="form-label">Key Responsibilities</label>
+                      <textarea class="form-control" id="adminResponsibilities" rows="3" required></textarea>
+                      <div class="invalid-feedback">Please enter your key responsibilities</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label for="adminCode" class="form-label">Admin Access Code</label>
+                      <input type="text" class="form-control" id="adminCode" required>
+                      <div class="invalid-feedback">Please enter a valid admin access code</div>
+                    </div>
+                  </div>
+
+                  <!-- Common Optional Fields for All Users -->
+                  <div class="common-fields mt-4">
+                    <h4 class="mb-3">Optional Information</h4>
+                    
+                    <div class="mb-3">
+                      <label class="form-label">Social Media Links (for trust-building and engagement)</label>
+                      <div class="input-group mb-2">
+                        <span class="input-group-text"><i class="fab fa-facebook-f"></i></span>
+                        <input type="url" class="form-control" id="facebookLink" placeholder="Facebook URL">
+                      </div>
+                      <div class="input-group mb-2">
+                        <span class="input-group-text"><i class="fab fa-instagram"></i></span>
+                        <input type="url" class="form-control" id="instagramLink" placeholder="Instagram URL">
+                      </div>
+                      <div class="input-group">
+                        <span class="input-group-text"><i class="fab fa-linkedin-in"></i></span>
+                        <input type="url" class="form-control" id="linkedinLink" placeholder="LinkedIn URL">
+                      </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label class="form-label">Receive Notifications?</label>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
+                        <label class="form-check-label" for="emailNotifications">Email Notifications</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="smsNotifications">
+                        <label class="form-check-label" for="smsNotifications">SMS Notifications</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="appNotifications" checked>
+                        <label class="form-check-label" for="appNotifications">App Notifications</label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-navigation">
+                    <button type="button" class="btn btn-outline-green prev-step">Back</button>
+                    <button type="button" class="btn btn-green next-step">Complete Registration</button>
+                  </div>
+                </div>
+
+                <!-- Step 4: Confirmation -->
+                <div class="form-step" id="step4">
+                  <div class="text-center">
+                    <div class="mb-4">
+                      <i class="fas fa-check-circle" style="font-size: 5rem; color: var(--green-primary);"></i>
+                    </div>
+                    <h3 class="mb-3">Registration Complete!</h3>
+                    <p class="mb-4">Thank you for joining Feedia. Your account has been created successfully.</p>
+                    <p>You will receive a confirmation email shortly with further instructions.</p>
+                    
+                    <div class="mt-5">
+                      <a href="index.html" class="btn btn-outline-green me-3">Return to Home</a>
+                      <a href="#" class="btn btn-green">Go to Dashboard</a>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Terms and Conditions -->
+                <div class="mt-4 mb-3 form-check">
+                  <input type="checkbox" class="form-check-input" id="termsCheck" required>
+                  <label class="form-check-label" for="termsCheck">I agree to the <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">Terms & Conditions</a> and <a href="#" data-bs-toggle="modal" data-bs-target="#privacyModal">Privacy Policy</a></label>
+                  <div class="invalid-feedback">You must agree to the terms and conditions</div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Terms & Conditions Modal -->
+  <div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="termsModalLabel">Terms & Conditions</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h6>1. Acceptance of Terms</h6>
+          <p>By accessing or using Feedia, you agree to be bound by these Terms and Conditions.</p>
+          
+          <h6>2. User Responsibilities</h6>
+          <p>Users are responsible for maintaining the confidentiality of their account information and for all activities that occur under their account.</p>
+          
+          <h6>3. Food Safety</h6>
+          <p>Donors must ensure that all food donated meets safety standards. Feedia is not responsible for the quality or safety of food exchanged through the platform.</p>
+          
+          <h6>4. Conduct</h6>
+          <p>Users agree not to use the service for any illegal or unauthorized purpose. Users must respect the rights of other users.</p>
+          
+          <h6>5. Termination</h6>
+          <p>Feedia reserves the right to terminate or suspend accounts at its sole discretion.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-green" data-bs-dismiss="modal">I Understand</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Privacy Policy Modal -->
+  <div class="modal fade" id="privacyModal" tabindex="-1" aria-labelledby="privacyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="privacyModalLabel">Privacy Policy</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h6>1. Information Collection</h6>
+          <p>We collect personal information that you provide when registering for an account, including name, email address, phone number, and location.</p>
+          
+          <h6>2. Use of Information</h6>
+          <p>We use your information to provide and improve our services, communicate with you, and ensure the security of our platform.</p>
+          
+          <h6>3. Information Sharing</h6>
+          <p>We may share your information with other users as necessary to facilitate food sharing. We do not sell your personal information to third parties.</p>
+          
+          <h6>4. Data Security</h6>
+          <p>We implement reasonable security measures to protect your personal information.</p>
+          
+          <h6>5. Your Rights</h6>
+          <p>You have the right to access, correct, or delete your personal information.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-green" data-bs-dismiss="modal">I Understand</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-4 mb-4 mb-lg-0">
+          <div class="feedia-logo footer-logo mb-3">
+            <span class="logo-text">Feedia</span>
+            <span class="logo-icon"><i class="fas fa-seedling"></i></span>
+          </div>
+          <p class="footer-text">Connecting communities to reduce food waste and fight hunger.</p>
+          <div class="social-icons">
+            <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-8">
+          <div class="row">
+            <div class="col-md-4 mb-4 mb-md-0">
+              <h3 class="footer-heading">Company</h3>
+              <ul class="footer-links">
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Careers</a></li>
+                <li><a href="#">Contact</a></li>
+              </ul>
+            </div>
+            <div class="col-md-4 mb-4 mb-md-0">
+              <h3 class="footer-heading">Resources</h3>
+              <ul class="footer-links">
+                <li><a href="#">Blog</a></li>
+                <li><a href="#">Community</a></li>
+                <li><a href="#">Support</a></li>
+              </ul>
+            </div>
+            <div class="col-md-4">
+              <h3 class="footer-heading">Legal</h3>
+              <ul class="footer-links">
+                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">Terms of Service</a></li>
+                <li><a href="#">Cookie Policy</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="copyright">© <span id="currentYear"></span> Feedia. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Custom JavaScript -->
+  <script>
+    // Set current year in footer
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+    // Form navigation
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('signupForm');
+      const steps = document.querySelectorAll('.form-step');
+      const progressBar = document.querySelector('.progress-bar');
+      const stepLabels = document.querySelectorAll('.step-label');
+      const nextButtons = document.querySelectorAll('.next-step');
+      const prevButtons = document.querySelectorAll('.prev-step');
+      const userTypeCards = document.querySelectorAll('.user-type-card');
+      const userTypeInput = document.getElementById('userType');
+      const userTypeError = document.getElementById('userTypeError');
+      const roleFields = document.querySelectorAll('.role-fields');
+      let currentStep = 0;
+
+      // Progress bar update
+      function updateProgress(step) {
+        const percent = ((step + 1) / steps.length) * 100;
+        progressBar.style.width = percent + '%';
+        progressBar.setAttribute('aria-valuenow', percent);
+        
+        // Update step labels
+        stepLabels.forEach((label, index) => {
+          if (index <= step) {
+            label.classList.add('active');
+          } else {
+            label.classList.remove('active');
+          }
+        });
+      }
+
+      // Show step
+      function showStep(step) {
+        steps.forEach((s, i) => {
+          if (i === step) {
+            s.classList.add('active');
+          } else {
+            s.classList.remove('active');
+          }
+        });
+        updateProgress(step);
+        
+        // Hide terms checkbox on last step
+        const termsCheckContainer = document.querySelector('.form-check');
+        if (step === 3) {
+          termsCheckContainer.style.display = 'none';
+        } else {
+          termsCheckContainer.style.display = 'block';
+        }
+      }
+
+      // Validate current step
+      function validateStep(step) {
+        let isValid = true;
+        
+        if (step === 0) {
+          // Validate basic account info
+          const fullName = document.getElementById('fullName');
+          const email = document.getElementById('email');
+          const phone = document.getElementById('phone');
+          const password = document.getElementById('password');
+          const confirmPassword = document.getElementById('confirmPassword');
+          
+          if (!fullName.value) {
+            fullName.classList.add('is-invalid');
+            isValid = false;
+          } else {
+            fullName.classList.remove('is-invalid');
+          }
+          
+          if (!email.value || !email.value.includes('@')) {
+            email.classList.add('is-invalid');
+            isValid = false;
+          } else {
+            email.classList.remove('is-invalid');
+          }
+          
+          if (!phone.value) {
+            phone.classList.add('is-invalid');
+            isValid = false;
+          } else {
+            phone.classList.remove('is-invalid');
+          }
+          
+          if (!password.value || password.value.length < 8) {
+            password.classList.add('is-invalid');
+            isValid = false;
+          } else {
+            password.classList.remove('is-invalid');
+          }
+          
+          if (!confirmPassword.value || confirmPassword.value !== password.value) {
+            confirmPassword.classList.add('is-invalid');
+            isValid = false;
+          } else {
+            confirmPassword.classList.remove('is-invalid');
+          }
+        }
+        
+        if (step === 1) {
+          // Validate user type selection
+          if (!userTypeInput.value) {
+            userTypeError.style.display = 'block';
+            isValid = false;
+          } else {
+            userTypeError.style.display = 'none';
+          }
+        }
+        
+        if (step === 2) {
+          // Validate role-specific fields
+          const selectedRole = userTypeInput.value;
+          
+          if (selectedRole === 'donor') {
+            const donorAddress = document.getElementById('donorAddress');
+            const foodType = document.getElementById('foodType');
+            
+            if (!donorAddress.value) {
+              donorAddress.classList.add('is-invalid');
+              isValid = false;
+            } else {
+              donorAddress.classList.remove('is-invalid');
+            }
+            
+            if (foodType.selectedOptions.length === 0) {
+              foodType.classList.add('is-invalid');
+              isValid = false;
+            } else {
+              foodType.classList.remove('is-invalid');
+            }
+          }
+          
+          if (selectedRole === 'pickup') {
+            const vehicleType = document.getElementById('vehicleType');
+            const preferredAreas = document.getElementById('preferredAreas');
+            
+            if (!vehicleType.value) {
+              vehicleType.classList.add('is-invalid');
+              isValid = false;
+            } else {
+              vehicleType.classList.remove('is-invalid');
+            }
+            
+            if (!preferredAreas.value) {
+              preferredAreas.classList.add('is-invalid');
+              isValid = false;
+            } else {
+              preferredAreas.classList.remove('is-invalid');
+            }
+          }
+          
+          if (selectedRole === 'beneficiary') {
+            const beneficiaryAddress = document.getElementById('beneficiaryAddress');
+            const foodNeeded = document.getElementById('foodNeeded');
+            const frequency = document.getElementById('frequency');
+            
+            if (!beneficiaryAddress.value) {
+              beneficiaryAddress.classList.add('is-invalid');
+              isValid = false;
+            } else {
+              beneficiaryAddress.classList.remove('is-invalid');
+            }
+            
+            if (foodNeeded.selectedOptions.length === 0) {
+              foodNeeded.classList.add('is-invalid');
+              isValid = false;
+            } else {
+              foodNeeded.classList.remove('is-invalid');
+            }
+            
+            if (!frequency.value) {
+              frequency.classList.add('is-invalid');
+              isValid = false;
+            } else {
+              frequency.classList.remove('is-invalid');
+            }
+          }
+          
+          if (selectedRole === 'admin') {
+            const adminPosition = document.getElementById('adminPosition');
+            const adminDepartment = document.getElementById('adminDepartment');
+            const adminResponsibilities = document.getElementById('adminResponsibilities');
+            const adminCode = document.getElementById('adminCode');
+            
+            if (!adminPosition.value) {
+              adminPosition.classList.add('is-invalid');
+              isValid = false;
+            } else {
+              adminPosition.classList.remove('is-invalid');
+            }
+            
+            if (!adminDepartment.value) {
+              adminDepartment.classList.add('is-invalid');
+              isValid = false;
+            } else {
+              adminDepartment.classList.remove('is-invalid');
+            }
+            
+            if (!adminResponsibilities.value) {
+              adminResponsibilities.classList.add('is-invalid');
+              isValid = false;
+            } else {
+              adminResponsibilities.classList.remove('is-invalid');
+            }
+            
+            if (!adminCode.value) {
+              adminCode.classList.add('is-invalid');
+              isValid = false;
+            } else {
+              adminCode.classList.remove('is-invalid');
+            }
+          }
+          
+          // Validate terms checkbox
+          const termsCheck = document.getElementById('termsCheck');
+          if (!termsCheck.checked) {
+            termsCheck.classList.add('is-invalid');
+            isValid = false;
+          } else {
+            termsCheck.classList.remove('is-invalid');
+          }
+        }
+        
+        return isValid;
+      }
+
+      // Next button click
+      nextButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          if (validateStep(currentStep)) {
+            currentStep++;
+            showStep(currentStep);
+            
+            // Show role-specific fields on step 3
+            if (currentStep === 2) {
+              const selectedRole = userTypeInput.value;
+              roleFields.forEach(field => {
+                field.style.display = 'none';
+              });
+              
+              if (selectedRole === 'donor') {
+                document.getElementById('donorFields').style.display = 'block';
+              } else if (selectedRole === 'pickup') {
+                document.getElementById('pickupFields').style.display = 'block';
+              } else if (selectedRole === 'beneficiary') {
+                document.getElementById('beneficiaryFields').style.display = 'block';
+              } else if (selectedRole === 'admin') {
+                document.getElementById('adminFields').style.display = 'block';
+              }
+            }
+          }
+        });
+      });
+
+      // Previous button click
+      prevButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          currentStep--;
+          showStep(currentStep);
+        });
+      });
+
+      // User type selection
+      userTypeCards.forEach(card => {
+        card.addEventListener('click', function() {
+          const userType = this.getAttribute('data-user-type');
+          userTypeInput.value = userType;
+          
+          // Remove selected class from all cards
+          userTypeCards.forEach(c => {
+            c.classList.remove('selected');
+          });
+          
+          // Add selected class to clicked card
+          this.classList.add('selected');
+          
+          // Hide error message
+          userTypeError.style.display = 'none';
+        });
+      });
+
+      // Initialize form
+      showStep(currentStep);
+    });
+  </script>
+</body>
+
+</html>
