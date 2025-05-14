@@ -195,7 +195,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-For support, email your-email@example.com or open an issue in the repository.
+For support, email rafayadeel1999@gmail.com / f223327@cfd.nu.edu.pk or open an issue in the repository.
 
 ## 🔄 Updates
 
@@ -314,7 +314,7 @@ Common issues and their solutions:
 Give a ⭐️ if this project helped you!
 
 ## �� Contact
-Rafay Adeel @iamrafayadeel
+Rafay Adeel on insta @iamrafayadeel
 Project Link: https://github.com/CodeRafay/Feedia
 ```
 
