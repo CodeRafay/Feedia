@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-const Login = () => {
+const Login = ({ onLoginSuccess }) => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         email: '',
@@ -25,17 +25,22 @@ const Login = () => {
 
         try {
             const response = await axios.post('/api/auth/login', formData);
-            const { token, role } = response.data;
+            const { token, role, name } = response.data;
 
-            // Store token and role in localStorage
-            localStorage.setItem('token', token);
-            localStorage.setItem('userRole', role);
+            // Call the login success handler from parent
+            if (onLoginSuccess) {
+                onLoginSuccess(token, role, name);
+            }
 
             // Redirect based on role
             if (role === 'donor') {
                 navigate('/donor/dashboard');
             } else if (role === 'pickup') {
                 navigate('/pickup/dashboard');
+            } else if (role === 'admin') {
+                navigate('/admin/dashboard');
+            } else {
+                navigate('/');
             }
         } catch (err) {
             setError(err.response?.data?.message || 'Invalid credentials');
@@ -87,7 +92,7 @@ const Login = () => {
 
                                 <button
                                     type="submit"
-                                    className="btn btn-primary w-100"
+                                    className="btn btn-success w-100"
                                     disabled={isLoading}
                                 >
                                     {isLoading ? (

@@ -154,10 +154,9 @@ const DonorDashboard = () => {
                                         required
                                     >
                                         <option value="">Select a category</option>
-                                        <option value="perishable">Perishable</option>
-                                        <option value="non-perishable">Non-Perishable</option>
-                                        <option value="canned">Canned</option>
-                                        <option value="baked">Baked</option>
+                                        <option value="hot_meal">Hot Meal</option>
+                                        <option value="packaged">Packaged</option>
+                                        <option value="raw_ingredients">Raw Ingredients</option>
                                     </select>
                                 </div>
 

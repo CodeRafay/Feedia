@@ -1,39 +1,67 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 
-const DonationList = () => {
+const DonationList = ({ showAll = false }) => {
     const [donations, setDonations] = useState([]);
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        fetchDonations();
-    }, []);
-
-    const fetchDonations = async () => {
+    const fetchDonations = useCallback(async () => {
         try {
-            const response = await axios.get('/api/donations');
-            setDonations(response.data.donations);
+            const endpoint = showAll ? '/api/donations' : '/api/donations/my';
+            const response = await axios.get(endpoint);
+            setDonations(response.data.donations || []);
         } catch (err) {
-            setError('Failed to fetch donations. Please try again later.');
+            // If fetching personal donations fails, try all donations
+            if (!showAll) {
+                try {
+                    const response = await axios.get('/api/donations');
+                    setDonations(response.data.donations || []);
+                } catch (fallbackErr) {
+                    setError('Failed to fetch donations. Please try again later.');
+                }
+            } else {
+                setError('Failed to fetch donations. Please try again later.');
+            }
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [showAll]);
+
+    useEffect(() => {
+        fetchDonations();
+    }, [fetchDonations]);
 
     const getStatusBadge = (status, expirationTime) => {
         const now = new Date();
         const expiration = new Date(expirationTime);
 
-        if (status === 'claimed') {
-            return <span className="badge bg-secondary">Claimed</span>;
+        if (status === 'delivered') {
+            return <span className="badge bg-primary">Delivered</span>;
         }
 
-        if (now > expiration) {
+        if (status === 'picked_up') {
+            return <span className="badge bg-info">Picked Up</span>;
+        }
+
+        if (status === 'expired' || now > expiration) {
             return <span className="badge bg-danger">Expired</span>;
         }
 
         return <span className="badge bg-success">Available</span>;
+    };
+
+    const getCategoryLabel = (category) => {
+        const labels = {
+            'hot_meal': 'Hot Meal',
+            'packaged': 'Packaged',
+            'raw_ingredients': 'Raw Ingredients',
+            'perishable': 'Perishable',
+            'non-perishable': 'Non-Perishable',
+            'canned': 'Canned',
+            'baked': 'Baked'
+        };
+        return labels[category] || category;
     };
 
     const formatDateTime = (dateTimeString) => {
@@ -43,7 +71,7 @@ const DonationList = () => {
     if (isLoading) {
         return (
             <div className="text-center mt-4">
-                <div className="spinner-border text-primary" role="status">
+                <div className="spinner-border text-success" role="status">
                     <span className="visually-hidden">Loading...</span>
                 </div>
             </div>
@@ -52,23 +80,29 @@ const DonationList = () => {
 
     if (error) {
         return (
-            <div className="alert alert-danger mt-4" role="alert">
-                {error}
+            <div className="container mt-4">
+                <div className="alert alert-danger" role="alert">
+                    {error}
+                </div>
             </div>
         );
     }
 
     if (donations.length === 0) {
         return (
-            <div className="alert alert-info mt-4" role="alert">
-                No donations found. Start by creating a new donation!
+            <div className={showAll ? 'container mt-4' : 'mt-4'}>
+                <div className="alert alert-info" role="alert">
+                    {showAll 
+                        ? 'No donations available at the moment. Check back later!'
+                        : 'No donations found. Start by creating a new donation!'}
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="mt-4">
-            <h3 className="mb-3">Your Donations</h3>
+        <div className={showAll ? 'container mt-4' : 'mt-4'}>
+            <h3 className="mb-3">{showAll ? 'Available Donations' : 'Your Donations'}</h3>
             <div className="table-responsive">
                 <table className="table table-striped table-hover">
                     <thead className="table-light">
@@ -85,17 +119,14 @@ const DonationList = () => {
                         {donations.map((donation) => (
                             <tr key={donation._id}>
                                 <td>{donation.foodType}</td>
-                                <td>
-                                    <span className="text-capitalize">
-                                        {donation.category.replace('_', ' ')}
-                                    </span>
-                                </td>
+                                <td>{getCategoryLabel(donation.category)}</td>
                                 <td>{donation.quantity}</td>
                                 <td>{formatDateTime(donation.expirationTime)}</td>
                                 <td>{getStatusBadge(donation.status, donation.expirationTime)}</td>
                                 <td>
                                     <small className="text-muted">
-                                        {donation.latitude.toFixed(4)}, {donation.longitude.toFixed(4)}
+                                        {donation.location?.latitude?.toFixed(4) || 'N/A'}, 
+                                        {donation.location?.longitude?.toFixed(4) || 'N/A'}
                                     </small>
                                 </td>
                             </tr>

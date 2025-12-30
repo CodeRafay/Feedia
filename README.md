@@ -1,321 +1,332 @@
+# Feedia - Community Food Sharing Platform 🍲
 
-# Food Sharing Application 🍲
+A full-stack MERN (MongoDB, Express.js, React.js, Node.js) web application that connects food donors with pickup services and beneficiaries, facilitating local food sharing and reducing food waste.
 
-A full-stack web application that connects food donors with recipients, facilitating local food sharing and reducing food waste. Built with the MERN stack (MongoDB, Express.js, React.js, Node.js).
+## 🌟 Overview
 
-## 🌟 Features
+Feedia is a community-driven platform designed to:
+- **Reduce food waste** by connecting surplus food with those who need it
+- **Combat hunger** by efficiently distributing food donations
+- **Build community** through transparent, rated interactions
 
-- **User Authentication**
-  - Secure registration and login
-  - Role-based access (Donor, Pickup, Admin)
-  - JWT-based authentication
-  - Password encryption
+### User Roles
 
-- **Food Donation Management**
-  - Create and manage food donations
-  - Categorize donations (hot meals, packaged food, raw ingredients)
-  - Set expiration times
-  - Upload food images
-  - Track donation status
+1. **Donors** - Restaurants, hotels, and individuals with surplus food
+2. **Pickup Services** - Drivers and volunteers who collect and deliver food
+3. **Admins** - Platform administrators who manage users and monitor activity
 
-- **Location Services**
-  - Real-time location tracking
-  - Geospatial queries
-  - Distance-based matching
-  - Location validation
+## 🚀 Features
 
-- **Pickup & Delivery System**
-  - Schedule pickups
-  - Track delivery status
-  - Manage drop-off locations
-  - Real-time status updates
+### Authentication & Authorization
+- ✅ Secure JWT-based authentication
+- ✅ Role-based access control (Donor, Pickup, Admin)
+- ✅ Protected routes and API endpoints
+
+### Food Donation Management
+- ✅ Create food listings with type, category, quantity, and expiration
+- ✅ Upload food images
+- ✅ Track donation status (Available, Picked Up, Delivered, Expired)
+- ✅ Automatic expiration handling
+
+### Pickup & Delivery System
+- ✅ View and request available donations
+- ✅ Track pickup status
+- ✅ Email notifications for pickup requests
+- ✅ Complete pickup workflow
+
+### Drop-Off Points
+- ✅ View community drop-off locations
+- ✅ Google Maps integration for location viewing
+- ✅ Distance-based search
+
+### Admin Dashboard
+- ✅ Platform-wide statistics
+- ✅ User management
+- ✅ Donation monitoring
+- ✅ Drop-off point management
+
+### Reviews & Ratings
+- ✅ Rate donors and pickup services
+- ✅ Build trust through transparency
+- ✅ Track average ratings
 
 ## 🛠️ Technology Stack
 
 ### Backend
-- Node.js & Express.js
-- MongoDB with Mongoose
-- JWT Authentication
-- bcrypt for password hashing
-- Multer for file uploads
-- Nodemailer for email services
+- **Runtime:** Node.js
+- **Framework:** Express.js
+- **Database:** MongoDB with Mongoose ODM
+- **Authentication:** JWT (JSON Web Tokens)
+- **Password Security:** bcrypt
+- **File Uploads:** Multer with GridFS
+- **Email:** Nodemailer
 
 ### Frontend
-- React.js
-- Modern JavaScript (ES6+)
-- CSS Modules
-- Responsive Design
+- **Framework:** React 18
+- **Routing:** React Router v6
+- **HTTP Client:** Axios
+- **Styling:** Bootstrap 5
+- **Maps:** Google Maps Embed API
 
 ## 📋 Prerequisites
 
-Before you begin, ensure you have the following installed:
-- Node.js (v14 or higher)
-- MongoDB
+- Node.js v14 or higher
+- MongoDB (local or cloud instance like MongoDB Atlas)
 - npm or yarn
 - Git
 
-## 🚀 Installation
+## 🔧 Installation
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/yourusername/food-sharing-app.git
-   cd food-sharing-app
-   ```
+### 1. Clone the Repository
+\`\`\`bash
+git clone https://github.com/CodeRafay/Feedia.git
+cd Feedia
+\`\`\`
 
-2. **Install server dependencies**
-   ```bash
-   npm install
-   ```
+### 2. Install Backend Dependencies
+\`\`\`bash
+npm install
+\`\`\`
 
-3. **Install client dependencies**
-   ```bash
-   cd client
-   npm install
-   ```
+### 3. Install Frontend Dependencies
+\`\`\`bash
+cd client
+npm install
+cd ..
+\`\`\`
 
-4. **Environment Setup**
-   Create a `.env` file in the root directory with the following variables:
-   ```env
-   PORT=5000
-   MONGO_URI=your_mongodb_connection_string
-   JWT_SECRET=your_jwt_secret
-   EMAIL_SERVICE=your_email_service
-   EMAIL_USER=your_email
-   EMAIL_PASS=your_email_password
-   ```
+### 4. Environment Configuration
 
-## 💻 Usage
+Create a \`.env\` file in the root directory:
 
-1. **Start the server**
-   ```bash
-   # Development mode
-   npm run dev
+\`\`\`env
+# Required
+MONGO_URI=mongodb://localhost:27017/feedia
+JWT_SECRET=your-secure-jwt-secret-key
 
-   # Production mode
-   npm start
-   ```
+# Optional
+PORT=5000
+NODE_ENV=development
+CORS_ORIGIN=http://localhost:3000
+GMAIL_USER=your-email@gmail.com
+GMAIL_PASS=your-app-password
+\`\`\`
 
-2. **Start the client**
-   ```bash
-   cd client
-   npm start
-   ```
+Create a \`.env\` file in the \`client\` directory:
 
-3. **Access the application**
-   - Frontend: `http://localhost:3000`
-   - Backend API: `http://localhost:5000`
+\`\`\`env
+REACT_APP_API_URL=http://localhost:5000
+REACT_APP_GOOGLE_MAPS_API_KEY=your-google-maps-api-key
+\`\`\`
+
+## 💻 Running the Application
+
+### Development Mode
+
+**Start the backend server:**
+\`\`\`bash
+npm run dev
+\`\`\`
+
+**Start the frontend (in a new terminal):**
+\`\`\`bash
+cd client
+npm start
+\`\`\`
+
+### Production Mode
+
+**Build the frontend:**
+\`\`\`bash
+cd client
+npm run build
+cd ..
+\`\`\`
+
+**Start the server:**
+\`\`\`bash
+npm start
+\`\`\`
+
+### Access Points
+- **Frontend:** http://localhost:3000
+- **Backend API:** http://localhost:5000
+- **Health Check:** http://localhost:5000/api/health
 
 ## 📁 Project Structure
 
-```
-food-sharing-app/
-├── client/                 # React frontend
-│   ├── public/
-│   └── src/
-│       ├── components/
-│       ├── pages/
-│       └── App.js
-├── models/                 # Mongoose models
-│   ├── User.js
+\`\`\`
+feedia/
+├── client/                    # React frontend
+│   ├── public/               # Static files and HTML templates
+│   ├── src/
+│   │   ├── components/       # React components
+│   │   │   ├── AdminDashboard.js
+│   │   │   ├── DonationList.js
+│   │   │   ├── DonorDashboard.js
+│   │   │   ├── DropOffList.js
+│   │   │   ├── LocationPicker.js
+│   │   │   ├── Login.js
+│   │   │   ├── PickupDashboard.js
+│   │   │   └── Register.js
+│   │   ├── App.js            # Main app component
+│   │   └── index.js          # Entry point
+│   └── package.json
+├── models/                    # Mongoose schemas
 │   ├── Donation.js
+│   ├── DropOff.js
 │   ├── Pickup.js
-│   └── DropOff.js
-├── routes/                 # API routes
+│   ├── Review.js
+│   └── User.js
+├── routes/                    # API routes
+│   ├── admin.js
 │   ├── auth.js
 │   ├── donations.js
+│   ├── dropoffs.js
 │   ├── pickups.js
-│   └── dropoffs.js
-├── middleware/            # Custom middleware
-├── server.js             # Express server
+│   ├── reviews.js
+│   └── uploads.js
+├── middleware/               # Custom middleware
+│   └── auth.js
+├── server.js                 # Express server
+├── vercel.json              # Vercel deployment config
+├── .env.example             # Environment variables template
 └── package.json
-```
+\`\`\`
 
 ## 🔒 API Endpoints
 
 ### Authentication
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - User login
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | \`/api/auth/register\` | Register new user |
+| POST | \`/api/auth/login\` | User login |
+| GET | \`/api/auth/me\` | Get current user profile |
 
 ### Donations
-- `GET /api/donations` - Get all donations
-- `POST /api/donations` - Create new donation
-- `GET /api/donations/:id` - Get specific donation
-- `PUT /api/donations/:id` - Update donation
-- `DELETE /api/donations/:id` - Delete donation
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | \`/api/donations\` | Get available donations |
+| GET | \`/api/donations/my\` | Get donor's own donations |
+| GET | \`/api/donations/:id\` | Get single donation |
+| POST | \`/api/donations\` | Create donation (donor) |
+| PUT | \`/api/donations/:id\` | Update donation |
+| DELETE | \`/api/donations/:id\` | Delete donation |
+| GET | \`/api/donations/nearby/:lat/:lng\` | Get nearby donations |
 
 ### Pickups
-- `GET /api/pickups` - Get all pickups
-- `POST /api/pickups` - Schedule pickup
-- `PUT /api/pickups/:id` - Update pickup status
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | \`/api/pickups\` | Get all pickups (admin) |
+| GET | \`/api/pickups/my\` | Get user's pickups |
+| POST | \`/api/pickups\` | Create pickup request |
+| PUT | \`/api/pickups/:id\` | Update pickup status |
+| DELETE | \`/api/pickups/:id\` | Cancel pickup |
 
-### Drop-offs
-- `GET /api/dropoffs` - Get all drop-offs
-- `POST /api/dropoffs` - Create drop-off
-- `PUT /api/dropoffs/:id` - Update drop-off status
+### Drop-Off Points
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | \`/api/dropoffs\` | Get all drop-off points |
+| GET | \`/api/dropoffs/nearby\` | Get nearby drop-off points |
+
+### Reviews
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | \`/api/reviews/user/:userId\` | Get reviews for user |
+| POST | \`/api/reviews\` | Create review |
+| PUT | \`/api/reviews/:id\` | Update review |
+| DELETE | \`/api/reviews/:id\` | Delete review |
+
+### Admin
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | \`/api/admin/stats\` | Get platform statistics |
+| GET | \`/api/admin/users\` | Get all users |
+| PUT | \`/api/admin/users/:id/role\` | Update user role |
+| POST | \`/api/admin/dropoffs\` | Create drop-off point |
+
+## 🚀 Deployment
+
+### Vercel Deployment
+
+1. Install Vercel CLI:
+\`\`\`bash
+npm i -g vercel
+\`\`\`
+
+2. Deploy:
+\`\`\`bash
+vercel
+\`\`\`
+
+3. Set environment variables in Vercel dashboard:
+   - \`MONGO_URI\`
+   - \`JWT_SECRET\`
+   - \`GMAIL_USER\` (optional)
+   - \`GMAIL_PASS\` (optional)
+
+### Manual Deployment
+
+1. Build the frontend:
+\`\`\`bash
+cd client && npm run build && cd ..
+\`\`\`
+
+2. Set \`NODE_ENV=production\`
+
+3. Start with:
+\`\`\`bash
+npm start
+\`\`\`
+
+## 🔐 Environment Variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| \`MONGO_URI\` | Yes | MongoDB connection string |
+| \`JWT_SECRET\` | Yes | Secret key for JWT tokens |
+| \`PORT\` | No | Server port (default: 5000) |
+| \`NODE_ENV\` | No | Environment (development/production) |
+| \`CORS_ORIGIN\` | No | Allowed CORS origin |
+| \`GMAIL_USER\` | No | Gmail for notifications |
+| \`GMAIL_PASS\` | No | Gmail app password |
+| \`REACT_APP_API_URL\` | No | API URL for frontend |
+| \`REACT_APP_GOOGLE_MAPS_API_KEY\` | No | Google Maps API key |
 
 ## 🧪 Testing
 
-```bash
+\`\`\`bash
 # Run backend tests
 npm test
 
 # Run frontend tests
 cd client
 npm test
-```
+\`\`\`
 
-## 📝 Contributing
+## 🤝 Contributing
 
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
+2. Create a feature branch: \`git checkout -b feature/AmazingFeature\`
+3. Commit changes: \`git commit -m 'Add AmazingFeature'\`
+4. Push to branch: \`git push origin feature/AmazingFeature\`
 5. Open a Pull Request
-
-## 🤝 Contributing Guidelines
-
-- Write clear, descriptive commit messages
-- Follow the existing code style
-- Add tests for new features
-- Update documentation as needed
-- Ensure all tests pass before submitting PR
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 👥 Authors
+## 👨‍💻 Author
 
-- Rafay Adeel
+**Rafay Adeel**
+- GitHub: [@CodeRafay](https://github.com/CodeRafay)
+- Email: rafayadeel1999@gmail.com
 
-##  Acknowledgments
+## 🙏 Acknowledgments
 
-- Inspired by the need to reduce food waste
-- Built with ❤️ for the community
+- Built with ❤️ for communities fighting food waste
+- Inspired by the need to reduce hunger and promote sustainability
 
-## 📞 Support
+---
 
-For support, email rafayadeel1999@gmail.com / f223327@cfd.nu.edu.pk or open an issue in the repository.
-
-## 🔄 Updates
-
-### Latest Updates
-- Added real-time location tracking
-- Implemented image upload for donations
-- Enhanced security features
-- Added email notifications
-
-### Planned Features
-- Real-time chat system
-- Mobile application
-- Advanced analytics dashboard
-- Social media integration
-
-## 📊 Performance
-
-- Optimized database queries
-- Implemented caching
-- Responsive design
-- Fast load times
-
-## 🔐 Security Features
-
-- JWT authentication
-- Password encryption
-- Input validation
-- XSS protection
-- CORS configuration
-- Rate limiting
-
-## 🌐 Browser Support
-
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
-
-## 📱 Mobile Responsiveness
-
-The application is fully responsive and works on:
-- Desktop
-- Tablet
-- Mobile devices
-
-## 🚨 Known Issues
-
-- List any known issues here
-- Include workarounds if available
-
-## 🔧 Troubleshooting
-
-Common issues and their solutions:
-
-1. **MongoDB Connection Error**
-   - Check your connection string
-   - Ensure MongoDB is running
-   - Verify network connectivity
-
-2. **Authentication Issues**
-   - Clear browser cache
-   - Check JWT secret
-   - Verify user credentials
-
-3. **File Upload Problems**
-   - Check file size limits
-   - Verify file types
-   - Ensure proper permissions
-
-## 📈 Future Roadmap
-
-- [ ] Real-time notifications
-- [ ] Advanced search filters
-- [ ] User ratings system
-- [ ] Automated matching system
-- [ ] Mobile app development
-- [ ] Analytics dashboard
-- [ ] Social sharing features
-- [ ] Multi-language support
-
-## 🎯 Project Goals
-
-- Reduce food waste
-- Connect communities
-- Provide efficient food distribution
-- Ensure food safety
-- Promote sustainability
-
-## 💡 Best Practices
-
-- Follow coding standards
-- Write clean, maintainable code
-- Document your code
-- Test thoroughly
-- Keep dependencies updated
-- Regular security audits
-
-## 🔍 Code Quality
-
-- ESLint configuration
-- Prettier formatting
-- Code review process
-- Continuous Integration
-- Automated testing
-
-## 📚 Documentation
-
-- API documentation
-- Component documentation
-- Setup guides
-- Deployment guides
-- Contributing guidelines
-
-## 🌟 Show your support
-
-Give a ⭐️ if this project helped you!
-
-## �� Contact
-Rafay Adeel on insta @iamrafayadeel
-Project Link: https://github.com/CodeRafay/Feedia
-```
-
-
+⭐ **Star this repo if you find it helpful!**
