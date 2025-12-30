@@ -78,28 +78,28 @@ Feedia is a community-driven platform designed to:
 ## 🔧 Installation
 
 ### 1. Clone the Repository
-\`\`\`bash
+```bash
 git clone https://github.com/CodeRafay/Feedia.git
 cd Feedia
-\`\`\`
+```
 
 ### 2. Install Backend Dependencies
-\`\`\`bash
+```bash
 npm install
-\`\`\`
+```
 
 ### 3. Install Frontend Dependencies
-\`\`\`bash
+```bash
 cd client
 npm install
 cd ..
-\`\`\`
+```
 
 ### 4. Environment Configuration
 
-Create a \`.env\` file in the root directory:
+Create a `.env` file in the root directory:
 
-\`\`\`env
+```env
 # Required
 MONGO_URI=mongodb://localhost:27017/feedia
 JWT_SECRET=your-secure-jwt-secret-key
@@ -110,43 +110,43 @@ NODE_ENV=development
 CORS_ORIGIN=http://localhost:3000
 GMAIL_USER=your-email@gmail.com
 GMAIL_PASS=your-app-password
-\`\`\`
+```
 
-Create a \`.env\` file in the \`client\` directory:
+Create a `.env` file in the `client` directory:
 
-\`\`\`env
+```env
 REACT_APP_API_URL=http://localhost:5000
 REACT_APP_GOOGLE_MAPS_API_KEY=your-google-maps-api-key
-\`\`\`
+```
 
 ## 💻 Running the Application
 
 ### Development Mode
 
 **Start the backend server:**
-\`\`\`bash
+```bash
 npm run dev
-\`\`\`
+```
 
 **Start the frontend (in a new terminal):**
-\`\`\`bash
+```bash
 cd client
 npm start
-\`\`\`
+```
 
 ### Production Mode
 
 **Build the frontend:**
-\`\`\`bash
+```bash
 cd client
 npm run build
 cd ..
-\`\`\`
+```
 
 **Start the server:**
-\`\`\`bash
+```bash
 npm start
-\`\`\`
+```
 
 ### Access Points
 - **Frontend:** http://localhost:3000
@@ -155,7 +155,7 @@ npm start
 
 ## 📁 Project Structure
 
-\`\`\`
+```
 feedia/
 ├── client/                    # React frontend
 │   ├── public/               # Static files and HTML templates
@@ -192,124 +192,124 @@ feedia/
 ├── vercel.json              # Vercel deployment config
 ├── .env.example             # Environment variables template
 └── package.json
-\`\`\`
+```
 
 ## 🔒 API Endpoints
 
 ### Authentication
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | \`/api/auth/register\` | Register new user |
-| POST | \`/api/auth/login\` | User login |
-| GET | \`/api/auth/me\` | Get current user profile |
+| POST | `/api/auth/register` | Register new user |
+| POST | `/api/auth/login` | User login |
+| GET | `/api/auth/me` | Get current user profile |
 
 ### Donations
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | \`/api/donations\` | Get available donations |
-| GET | \`/api/donations/my\` | Get donor's own donations |
-| GET | \`/api/donations/:id\` | Get single donation |
-| POST | \`/api/donations\` | Create donation (donor) |
-| PUT | \`/api/donations/:id\` | Update donation |
-| DELETE | \`/api/donations/:id\` | Delete donation |
-| GET | \`/api/donations/nearby/:lat/:lng\` | Get nearby donations |
+| GET | `/api/donations` | Get available donations |
+| GET | `/api/donations/my` | Get donor's own donations |
+| GET | `/api/donations/:id` | Get single donation |
+| POST | `/api/donations` | Create donation (donor) |
+| PUT | `/api/donations/:id` | Update donation |
+| DELETE | `/api/donations/:id` | Delete donation |
+| GET | `/api/donations/nearby/:lat/:lng` | Get nearby donations |
 
 ### Pickups
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | \`/api/pickups\` | Get all pickups (admin) |
-| GET | \`/api/pickups/my\` | Get user's pickups |
-| POST | \`/api/pickups\` | Create pickup request |
-| PUT | \`/api/pickups/:id\` | Update pickup status |
-| DELETE | \`/api/pickups/:id\` | Cancel pickup |
+| GET | `/api/pickups` | Get all pickups (admin) |
+| GET | `/api/pickups/my` | Get user's pickups |
+| POST | `/api/pickups` | Create pickup request |
+| PUT | `/api/pickups/:id` | Update pickup status |
+| DELETE | `/api/pickups/:id` | Cancel pickup |
 
 ### Drop-Off Points
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | \`/api/dropoffs\` | Get all drop-off points |
-| GET | \`/api/dropoffs/nearby\` | Get nearby drop-off points |
+| GET | `/api/dropoffs` | Get all drop-off points |
+| GET | `/api/dropoffs/nearby` | Get nearby drop-off points |
 
 ### Reviews
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | \`/api/reviews/user/:userId\` | Get reviews for user |
-| POST | \`/api/reviews\` | Create review |
-| PUT | \`/api/reviews/:id\` | Update review |
-| DELETE | \`/api/reviews/:id\` | Delete review |
+| GET | `/api/reviews/user/:userId` | Get reviews for user |
+| POST | `/api/reviews` | Create review |
+| PUT | `/api/reviews/:id` | Update review |
+| DELETE | `/api/reviews/:id` | Delete review |
 
 ### Admin
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | \`/api/admin/stats\` | Get platform statistics |
-| GET | \`/api/admin/users\` | Get all users |
-| PUT | \`/api/admin/users/:id/role\` | Update user role |
-| POST | \`/api/admin/dropoffs\` | Create drop-off point |
+| GET | `/api/admin/stats` | Get platform statistics |
+| GET | `/api/admin/users` | Get all users |
+| PUT | `/api/admin/users/:id/role` | Update user role |
+| POST | `/api/admin/dropoffs` | Create drop-off point |
 
 ## 🚀 Deployment
 
 ### Vercel Deployment
 
 1. Install Vercel CLI:
-\`\`\`bash
+```bash
 npm i -g vercel
-\`\`\`
+```
 
 2. Deploy:
-\`\`\`bash
+```bash
 vercel
-\`\`\`
+```
 
 3. Set environment variables in Vercel dashboard:
-   - \`MONGO_URI\`
-   - \`JWT_SECRET\`
-   - \`GMAIL_USER\` (optional)
-   - \`GMAIL_PASS\` (optional)
+   - `MONGO_URI`
+   - `JWT_SECRET`
+   - `GMAIL_USER` (optional)
+   - `GMAIL_PASS` (optional)
 
 ### Manual Deployment
 
 1. Build the frontend:
-\`\`\`bash
+```bash
 cd client && npm run build && cd ..
-\`\`\`
+```
 
-2. Set \`NODE_ENV=production\`
+2. Set `NODE_ENV=production`
 
 3. Start with:
-\`\`\`bash
+```bash
 npm start
-\`\`\`
+```
 
 ## 🔐 Environment Variables
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| \`MONGO_URI\` | Yes | MongoDB connection string |
-| \`JWT_SECRET\` | Yes | Secret key for JWT tokens |
-| \`PORT\` | No | Server port (default: 5000) |
-| \`NODE_ENV\` | No | Environment (development/production) |
-| \`CORS_ORIGIN\` | No | Allowed CORS origin |
-| \`GMAIL_USER\` | No | Gmail for notifications |
-| \`GMAIL_PASS\` | No | Gmail app password |
-| \`REACT_APP_API_URL\` | No | API URL for frontend |
-| \`REACT_APP_GOOGLE_MAPS_API_KEY\` | No | Google Maps API key |
+| `MONGO_URI` | Yes | MongoDB connection string |
+| `JWT_SECRET` | Yes | Secret key for JWT tokens |
+| `PORT` | No | Server port (default: 5000) |
+| `NODE_ENV` | No | Environment (development/production) |
+| `CORS_ORIGIN` | No | Allowed CORS origin |
+| `GMAIL_USER` | No | Gmail for notifications |
+| `GMAIL_PASS` | No | Gmail app password |
+| `REACT_APP_API_URL` | No | API URL for frontend |
+| `REACT_APP_GOOGLE_MAPS_API_KEY` | No | Google Maps API key |
 
 ## 🧪 Testing
 
-\`\`\`bash
+```bash
 # Run backend tests
 npm test
 
 # Run frontend tests
 cd client
 npm test
-\`\`\`
+```
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch: \`git checkout -b feature/AmazingFeature\`
-3. Commit changes: \`git commit -m 'Add AmazingFeature'\`
-4. Push to branch: \`git push origin feature/AmazingFeature\`
+2. Create a feature branch: `git checkout -b feature/AmazingFeature`
+3. Commit changes: `git commit -m 'Add AmazingFeature'`
+4. Push to branch: `git push origin feature/AmazingFeature`
 5. Open a Pull Request
 
 ## 📄 License
