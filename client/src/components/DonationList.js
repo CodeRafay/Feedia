@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 
 const DonationList = ({ showAll = false }) => {
@@ -6,11 +6,7 @@ const DonationList = ({ showAll = false }) => {
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        fetchDonations();
-    }, [showAll]);
-
-    const fetchDonations = async () => {
+    const fetchDonations = useCallback(async () => {
         try {
             const endpoint = showAll ? '/api/donations' : '/api/donations/my';
             const response = await axios.get(endpoint);
@@ -30,7 +26,11 @@ const DonationList = ({ showAll = false }) => {
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [showAll]);
+
+    useEffect(() => {
+        fetchDonations();
+    }, [fetchDonations]);
 
     const getStatusBadge = (status, expirationTime) => {
         const now = new Date();

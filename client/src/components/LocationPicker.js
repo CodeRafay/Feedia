@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 const LocationPicker = ({ onLocationSelect, initialLat, initialLng }) => {
     const [map, setMap] = useState(null);
@@ -6,25 +6,10 @@ const LocationPicker = ({ onLocationSelect, initialLat, initialLng }) => {
     const [manualLat, setManualLat] = useState(initialLat || '');
     const [manualLng, setManualLng] = useState(initialLng || '');
     const [error, setError] = useState('');
-    const mapRef = useRef(null);
     const googleMapRef = useRef(null);
 
-    useEffect(() => {
-        // Load Google Maps script
-        const script = document.createElement('script');
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`;
-        script.async = true;
-        script.defer = true;
-        script.addEventListener('load', initializeMap);
-        document.head.appendChild(script);
-
-        return () => {
-            document.head.removeChild(script);
-        };
-    }, []);
-
-    const initializeMap = () => {
-        if (!googleMapRef.current) return;
+    const initializeMap = useCallback(() => {
+        if (!googleMapRef.current || !window.google) return;
 
         const defaultLocation = { lat: 0, lng: 0 };
         const initialLocation = initialLat && initialLng
@@ -46,18 +31,6 @@ const LocationPicker = ({ onLocationSelect, initialLat, initialLng }) => {
             const lat = e.latLng.lat();
             const lng = e.latLng.lng();
 
-            // Update marker
-            if (marker) {
-                marker.setPosition(e.latLng);
-            } else {
-                const newMarker = new window.google.maps.Marker({
-                    position: e.latLng,
-                    map: mapInstance,
-                    draggable: true,
-                });
-                setMarker(newMarker);
-            }
-
             // Update manual input fields
             setManualLat(lat.toFixed(6));
             setManualLng(lng.toFixed(6));
@@ -65,7 +38,29 @@ const LocationPicker = ({ onLocationSelect, initialLat, initialLng }) => {
             // Notify parent component
             onLocationSelect(lat, lng);
         });
-    };
+    }, [initialLat, initialLng, onLocationSelect]);
+
+    useEffect(() => {
+        // Check if Google Maps is already loaded
+        if (window.google && window.google.maps) {
+            initializeMap();
+            return;
+        }
+
+        // Load Google Maps script
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`;
+        script.async = true;
+        script.defer = true;
+        script.addEventListener('load', initializeMap);
+        document.head.appendChild(script);
+
+        return () => {
+            if (document.head.contains(script)) {
+                document.head.removeChild(script);
+            }
+        };
+    }, [initializeMap]);
 
     const handleManualLatChange = (e) => {
         const value = e.target.value;
