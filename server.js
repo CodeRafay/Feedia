@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const rateLimit = require('express-rate-limit');
 const authRoutes = require('./routes/auth');
 const donationRoutes = require('./routes/donations');
 const pickupRoutes = require('./routes/pickups');
@@ -24,6 +25,30 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'client', 'build')));
 app.use(express.static(path.join(__dirname, 'client', 'public')));
 
+// Rate limiting configuration
+const apiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per windowMs
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { message: 'Too many requests, please try again later.' }
+});
+
+// Stricter rate limit for auth routes
+const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 20, // Limit each IP to 20 auth requests per windowMs
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { message: 'Too many authentication attempts, please try again later.' }
+});
+
+// Apply rate limiting to all API routes
+app.use('/api/', apiLimiter);
+
+// Apply stricter rate limiting to auth routes
+app.use('/api/auth', authLimiter);
+
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/donations', donationRoutes);
@@ -42,8 +67,16 @@ app.get('/api/health', (req, res) => {
     });
 });
 
+// Rate limiter for static files (less restrictive)
+const staticLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 500, // More permissive for static files
+    standardHeaders: true,
+    legacyHeaders: false
+});
+
 // Serve React app for any other routes (SPA support)
-app.get('*', (req, res) => {
+app.get('*', staticLimiter, (req, res) => {
     // Check if requesting API route that doesn't exist
     if (req.path.startsWith('/api/')) {
         return res.status(404).json({ message: 'API endpoint not found' });
@@ -93,6 +126,9 @@ if (!MONGO_URI) {
     process.exit(1);
 }
 
+// Store interval reference for cleanup
+let expirationInterval = null;
+
 mongoose.connect(MONGO_URI)
     .then(() => {
         console.log('MongoDB connected successfully');
@@ -101,12 +137,32 @@ mongoose.connect(MONGO_URI)
         markExpiredDonations();
         
         // Schedule expiration check every 5 minutes
-        setInterval(markExpiredDonations, 5 * 60 * 1000);
+        expirationInterval = setInterval(markExpiredDonations, 5 * 60 * 1000);
     })
     .catch((err) => {
         console.error('MongoDB connection error:', err);
         process.exit(1);
     });
+
+// Graceful shutdown handler
+const gracefulShutdown = () => {
+    console.log('Shutting down gracefully...');
+    if (expirationInterval) {
+        clearInterval(expirationInterval);
+    }
+    mongoose.connection.close()
+        .then(() => {
+            console.log('MongoDB connection closed');
+            process.exit(0);
+        })
+        .catch((err) => {
+            console.error('Error closing MongoDB connection:', err);
+            process.exit(1);
+        });
+};
+
+process.on('SIGTERM', gracefulShutdown);
+process.on('SIGINT', gracefulShutdown);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

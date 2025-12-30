@@ -6,12 +6,20 @@ const User = require('../models/User');
 const auth = require('../middleware/auth');
 const nodemailer = require('nodemailer');
 
+// Define pickup status constants for consistency
+const PICKUP_STATUS = {
+    PENDING: 'pending',
+    ACCEPTED: 'accepted',
+    COMPLETED: 'completed'
+};
+const VALID_PICKUP_STATUSES = Object.values(PICKUP_STATUS);
+
 // Get all pickups (admin only)
 router.get('/', auth(['admin']), async (req, res) => {
     try {
         const { status } = req.query;
         const filter = {};
-        if (status) {
+        if (status && VALID_PICKUP_STATUSES.includes(status)) {
             filter.status = status;
         }
 
@@ -92,7 +100,7 @@ router.post('/', auth(['pickup']), async (req, res) => {
         // Check if there's already a pending pickup request
         const existingPickup = await Pickup.findOne({
             donationId,
-            status: { $in: ['pending', 'accepted'] }
+            status: { $in: [PICKUP_STATUS.PENDING, PICKUP_STATUS.ACCEPTED] }
         });
 
         if (existingPickup) {
@@ -152,8 +160,7 @@ router.put('/:id', auth(['pickup', 'admin']), async (req, res) => {
             return res.status(403).json({ message: 'Not authorized to update this pickup' });
         }
 
-        const validStatuses = ['pending', 'accepted', 'completed'];
-        if (status && !validStatuses.includes(status)) {
+        if (status && !VALID_PICKUP_STATUSES.includes(status)) {
             return res.status(400).json({ message: 'Invalid status' });
         }
 
@@ -164,7 +171,7 @@ router.put('/:id', auth(['pickup', 'admin']), async (req, res) => {
         await pickup.save();
 
         // If completed, update donation status to delivered
-        if (status === 'completed') {
+        if (status === PICKUP_STATUS.COMPLETED) {
             await Donation.findByIdAndUpdate(pickup.donationId, { status: 'delivered' });
         }
 
@@ -195,7 +202,7 @@ router.delete('/:id', auth(['pickup', 'admin']), async (req, res) => {
         }
 
         // Only allow canceling pending pickups
-        if (pickup.status !== 'pending') {
+        if (pickup.status !== PICKUP_STATUS.PENDING) {
             return res.status(400).json({ message: 'Can only cancel pending pickups' });
         }
 

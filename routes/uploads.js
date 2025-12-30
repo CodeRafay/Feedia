@@ -108,8 +108,8 @@ router.delete('/:filename', async (req, res) => {
             });
         }
 
-        // Delete the file
-        fs.unlinkSync(filePath);
+        // Delete the file asynchronously
+        await fs.promises.unlink(filePath);
 
         res.json({
             success: true,
