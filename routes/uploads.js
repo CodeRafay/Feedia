@@ -13,7 +13,7 @@ if (!fs.existsSync(uploadsDir)) {
 const filenamePattern = /^[a-zA-Z0-9._-]+$/;
 
 const getSafeUploadPath = (filename) => {
-    if (!filename || !filenamePattern.test(filename)) {
+    if (!filename || !filenamePattern.test(filename) || filename.includes('..')) {
         return null;
     }
 
