@@ -10,6 +10,23 @@ if (!fs.existsSync(uploadsDir)) {
     fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
+const filenamePattern = /^[a-zA-Z0-9._-]+$/;
+
+const getSafeUploadPath = (filename) => {
+    if (!filename || !filenamePattern.test(filename) || filename.includes('..')) {
+        return null;
+    }
+
+    const normalizedFilename = path.basename(filename);
+    const resolvedPath = path.resolve(uploadsDir, normalizedFilename);
+
+    if (!resolvedPath.startsWith(path.resolve(uploadsDir) + path.sep)) {
+        return null;
+    }
+
+    return resolvedPath;
+};
+
 // Configure multer storage
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -72,8 +89,13 @@ router.post('/', upload.single('image'), async (req, res) => {
 // GET /api/uploads/:filename - Get image by filename
 router.get('/:filename', async (req, res) => {
     try {
-        const filename = req.params.filename;
-        const filePath = path.join(uploadsDir, filename);
+        const filePath = getSafeUploadPath(req.params.filename);
+        if (!filePath) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid filename'
+            });
+        }
 
         // Check if file exists
         if (!fs.existsSync(filePath)) {
@@ -97,8 +119,13 @@ router.get('/:filename', async (req, res) => {
 // DELETE /api/uploads/:filename - Delete image
 router.delete('/:filename', async (req, res) => {
     try {
-        const filename = req.params.filename;
-        const filePath = path.join(uploadsDir, filename);
+        const filePath = getSafeUploadPath(req.params.filename);
+        if (!filePath) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid filename'
+            });
+        }
 
         // Check if file exists
         if (!fs.existsSync(filePath)) {

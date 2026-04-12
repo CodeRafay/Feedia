@@ -1,8 +1,17 @@
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+jest.mock('axios', () => ({
+  defaults: {
+    baseURL: '',
+    headers: {
+      common: {}
+    }
+  }
+}));
+
+test('renders application navigation', () => {
   render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
+  const linkElement = screen.getByRole('link', { name: /^home$/i });
   expect(linkElement).toBeInTheDocument();
 });
