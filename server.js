@@ -14,6 +14,7 @@ const path = require('path');
 const Donation = require('./models/Donation');
 
 const app = express();
+app.disable('x-powered-by');
 
 // Middleware
 app.use(cors({
