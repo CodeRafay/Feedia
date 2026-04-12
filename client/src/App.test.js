@@ -12,6 +12,6 @@ jest.mock('axios', () => ({
 
 test('renders application navigation', () => {
   render(<App />);
-  const linkElement = screen.getByText(/home/i);
+  const linkElement = screen.getByRole('link', { name: /^home$/i });
   expect(linkElement).toBeInTheDocument();
 });
