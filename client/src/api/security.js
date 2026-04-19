@@ -1,5 +1,8 @@
 import axios from 'axios';
 
+const SENSITIVE_HEADERS = ['Authorization', 'X-API-Key', 'X-Api-Key', 'x-api-key'];
+
+// Ensure we only use http(s) origins and normalize trailing slashes.
 const getSafeBaseUrl = () => {
     const candidate = process.env.REACT_APP_API_URL || 'http://localhost:5000';
     try {
@@ -22,15 +25,19 @@ export const stripSensitiveHeaders = (headers) => {
     }
 
     if (typeof headers.delete === 'function') {
-        headers.delete('Authorization');
-        headers.delete('X-API-Key');
-    } else {
-        delete headers.Authorization;
-        delete headers['X-API-Key'];
+        SENSITIVE_HEADERS.forEach((key) => headers.delete(key));
+        return;
     }
+
+    SENSITIVE_HEADERS.forEach((key) => {
+        if (key in headers) {
+            delete headers[key];
+        }
+    });
 };
 
 export const configureAxiosSecurity = (client = axios) => {
+    // Enforce no automatic redirects and strip auth-like headers on any cross-origin redirect attempt.
     client.defaults.baseURL = API_BASE_URL;
     client.defaults.maxRedirects = 0;
 
