@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const DropOff = require('../models/DropOff');
+const { body } = require('express-validator');
+const { handleValidation } = require('../middleware/validation');
 
 // Get all drop-off points
 router.get('/', async (req, res) => {
@@ -21,16 +23,21 @@ router.get('/', async (req, res) => {
     }
 });
 
-// Get nearest drop-off points
-router.get('/nearby', async (req, res) => {
-    try {
-        const { latitude, longitude, maxDistance = 10 } = req.query;
+// Block legacy GET pattern to prevent leaking location data through URLs
+router.get('/nearby', (req, res) => {
+    return res.status(405).json({
+        message: 'Use POST /api/dropoffs/nearby with coordinates in the request body.'
+    });
+});
 
-        if (!latitude || !longitude) {
-            return res.status(400).json({
-                message: 'Latitude and longitude are required'
-            });
-        }
+// Get nearest drop-off points (requires POST to avoid leaking location data via URL)
+router.post('/nearby', [
+    body('latitude').isFloat({ min: -90, max: 90 }).withMessage('Latitude is required'),
+    body('longitude').isFloat({ min: -180, max: 180 }).withMessage('Longitude is required'),
+    body('maxDistance').optional({ checkFalsy: true }).isFloat({ min: 0.1, max: 500 }).toFloat()
+], handleValidation, async (req, res) => {
+    try {
+        const { latitude, longitude, maxDistance = 10 } = req.body;
 
         // Find nearest drop-off points
         const dropOffs = await DropOff.findNearest(

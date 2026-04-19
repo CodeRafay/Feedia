@@ -2,9 +2,14 @@ const express = require('express');
 const router = express.Router();
 const Donation = require('../models/Donation');
 const auth = require('../middleware/auth');
+const { body, param, query } = require('express-validator');
+const { handleValidation } = require('../middleware/validation');
 
 // Get all donations (public - shows available donations)
-router.get('/', async (req, res) => {
+router.get('/', [
+    query('status').optional().isIn(['available', 'picked_up', 'delivered', 'expired']).withMessage('Invalid status filter'),
+    query('category').optional().matches(/^[a-zA-Z0-9_-]+$/).withMessage('Invalid category filter')
+], handleValidation, async (req, res) => {
     try {
         const { status, category } = req.query;
         
@@ -57,7 +62,9 @@ router.get('/my', auth(['donor']), async (req, res) => {
 });
 
 // Get single donation by ID
-router.get('/:id', async (req, res) => {
+router.get('/:id', [
+    param('id').isMongoId().withMessage('Invalid donation id')
+], handleValidation, async (req, res) => {
     try {
         const donation = await Donation.findById(req.params.id)
             .populate('donorId', 'name email location');
@@ -77,7 +84,15 @@ router.get('/:id', async (req, res) => {
 });
 
 // Create new donation (donor only)
-router.post('/', auth(['donor']), async (req, res) => {
+router.post('/', auth(['donor']), [
+    body('foodType').trim().isLength({ min: 2, max: 200 }).withMessage('Food type is required'),
+    body('category').trim().isLength({ min: 2, max: 100 }).withMessage('Category is required'),
+    body('quantity').isInt({ min: 1 }).toInt().withMessage('Quantity must be a positive integer'),
+    body('expirationTime').isISO8601().withMessage('Expiration time must be a valid date'),
+    body('image').optional({ nullable: true, checkFalsy: true }).isString().trim(),
+    body('latitude').optional({ checkFalsy: true }).isFloat({ min: -90, max: 90 }).toFloat(),
+    body('longitude').optional({ checkFalsy: true }).isFloat({ min: -180, max: 180 }).toFloat()
+], handleValidation, async (req, res) => {
     try {
         const {
             foodType,
@@ -88,13 +103,6 @@ router.post('/', auth(['donor']), async (req, res) => {
             latitude,
             longitude
         } = req.body;
-
-        // Validate required fields
-        if (!foodType || !category || !quantity || !expirationTime) {
-            return res.status(400).json({ 
-                message: 'Food type, category, quantity, and expiration time are required' 
-            });
-        }
 
         // Create new donation
         const donation = new Donation({
@@ -133,7 +141,10 @@ router.post('/', auth(['donor']), async (req, res) => {
 });
 
 // Update donation status (donor can update their own, pickup can update to picked_up/delivered)
-router.put('/:id', auth(['donor', 'pickup', 'admin']), async (req, res) => {
+router.put('/:id', auth(['donor', 'pickup', 'admin']), [
+    param('id').isMongoId().withMessage('Invalid donation id'),
+    body('status').optional().isIn(['available', 'picked_up', 'delivered', 'expired']).withMessage('Invalid status')
+], handleValidation, async (req, res) => {
     try {
         const { status } = req.body;
         const donation = await Donation.findById(req.params.id);
@@ -175,7 +186,9 @@ router.put('/:id', auth(['donor', 'pickup', 'admin']), async (req, res) => {
 });
 
 // Delete donation (owner or admin only)
-router.delete('/:id', auth(['donor', 'admin']), async (req, res) => {
+router.delete('/:id', auth(['donor', 'admin']), [
+    param('id').isMongoId().withMessage('Invalid donation id')
+], handleValidation, async (req, res) => {
     try {
         const donation = await Donation.findById(req.params.id);
 
@@ -201,7 +214,11 @@ router.delete('/:id', auth(['donor', 'admin']), async (req, res) => {
 });
 
 // Get nearby donations
-router.get('/nearby/:lat/:lng', async (req, res) => {
+router.get('/nearby/:lat/:lng', [
+    param('lat').isFloat({ min: -90, max: 90 }).withMessage('Latitude must be a number'),
+    param('lng').isFloat({ min: -180, max: 180 }).withMessage('Longitude must be a number'),
+    query('maxDistance').optional({ checkFalsy: true }).isFloat({ min: 0.1, max: 500 }).toFloat()
+], handleValidation, async (req, res) => {
     try {
         const { lat, lng } = req.params;
         const { maxDistance = 10 } = req.query; // Default 10 km

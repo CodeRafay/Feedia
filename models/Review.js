@@ -54,8 +54,9 @@ reviewSchema.index({ reviewerId: 1, revieweeId: 1 });
 
 // Static method to calculate average rating for a user
 reviewSchema.statics.calculateAverageRating = async function(userId) {
+    const revieweeId = new mongoose.Types.ObjectId(userId);
     const result = await this.aggregate([
-        { $match: { revieweeId: userId } },
+        { $match: { revieweeId } },
         { 
             $group: { 
                 _id: '$revieweeId', 

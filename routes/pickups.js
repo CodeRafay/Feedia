@@ -5,6 +5,8 @@ const Donation = require('../models/Donation');
 const User = require('../models/User');
 const auth = require('../middleware/auth');
 const nodemailer = require('nodemailer');
+const { body, param, query } = require('express-validator');
+const { handleValidation } = require('../middleware/validation');
 
 // Define pickup status constants for consistency
 const PICKUP_STATUS = {
@@ -15,7 +17,9 @@ const PICKUP_STATUS = {
 const VALID_PICKUP_STATUSES = Object.values(PICKUP_STATUS);
 
 // Get all pickups (admin only)
-router.get('/', auth(['admin']), async (req, res) => {
+router.get('/', auth(['admin']), [
+    query('status').optional().isIn(VALID_PICKUP_STATUSES).withMessage('Invalid status filter')
+], handleValidation, async (req, res) => {
     try {
         const { status } = req.query;
         const filter = {};
@@ -58,7 +62,9 @@ router.get('/my', auth(['pickup']), async (req, res) => {
 });
 
 // Get single pickup
-router.get('/:id', auth([]), async (req, res) => {
+router.get('/:id', auth([]), [
+    param('id').isMongoId().withMessage('Invalid pickup id')
+], handleValidation, async (req, res) => {
     try {
         const pickup = await Pickup.findById(req.params.id)
             .populate('donationId')
@@ -79,13 +85,11 @@ router.get('/:id', auth([]), async (req, res) => {
 });
 
 // Create new pickup request (pickup service only)
-router.post('/', auth(['pickup']), async (req, res) => {
+router.post('/', auth(['pickup']), [
+    body('donationId').isMongoId().withMessage('Donation ID is required')
+], handleValidation, async (req, res) => {
     try {
         const { donationId } = req.body;
-
-        if (!donationId) {
-            return res.status(400).json({ message: 'Donation ID is required' });
-        }
 
         // Check if donation exists and is available
         const donation = await Donation.findById(donationId);
@@ -143,7 +147,10 @@ router.post('/', auth(['pickup']), async (req, res) => {
 });
 
 // Update pickup status
-router.put('/:id', auth(['pickup', 'admin']), async (req, res) => {
+router.put('/:id', auth(['pickup', 'admin']), [
+    param('id').isMongoId().withMessage('Invalid pickup id'),
+    body('status').optional().isIn(VALID_PICKUP_STATUSES).withMessage('Invalid status')
+], handleValidation, async (req, res) => {
     try {
         const { status } = req.body;
         
@@ -186,7 +193,9 @@ router.put('/:id', auth(['pickup', 'admin']), async (req, res) => {
 });
 
 // Cancel pickup
-router.delete('/:id', auth(['pickup', 'admin']), async (req, res) => {
+router.delete('/:id', auth(['pickup', 'admin']), [
+    param('id').isMongoId().withMessage('Invalid pickup id')
+], handleValidation, async (req, res) => {
     try {
         const pickup = await Pickup.findById(req.params.id);
         if (!pickup) {

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import DonationList from './DonationList';
 import LocationPicker from './LocationPicker';
+import DOMPurify from 'dompurify';
 
 const DonorDashboard = () => {
     const navigate = useNavigate();
@@ -30,18 +31,32 @@ const DonorDashboard = () => {
         }
     }, [navigate]);
 
+    const sanitizeText = (value) => DOMPurify.sanitize(value || '', { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
+    const sanitizeUrl = (value) => DOMPurify.sanitize(value || '', {
+        ALLOWED_TAGS: [],
+        ALLOWED_ATTR: [],
+        ALLOWED_URI_REGEXP: /^(?:https?|blob|data):/i
+    });
+
     const handleChange = (e) => {
+        const value = sanitizeText(e.target.value);
         setFormData({
             ...formData,
-            [e.target.name]: e.target.value
+            [e.target.name]: value
         });
     };
 
     const handleLocationSelect = (lat, lng) => {
+        const latitude = Number(lat);
+        const longitude = Number(lng);
+        if (!Number.isFinite(latitude) || !Number.isFinite(longitude)) {
+            return;
+        }
+
         setFormData({
             ...formData,
-            latitude: lat,
-            longitude: lng
+            latitude,
+            longitude
         });
     };
 
@@ -51,7 +66,8 @@ const DonorDashboard = () => {
             setSelectedImage(file);
             // Create preview URL
             const previewUrl = URL.createObjectURL(file);
-            setImagePreview(previewUrl);
+            const safePreview = sanitizeUrl(previewUrl);
+            setImagePreview(safePreview);
         }
     };
 
@@ -85,7 +101,11 @@ const DonorDashboard = () => {
 
             const donationData = {
                 ...formData,
-                imageUrl
+                foodType: sanitizeText(formData.foodType),
+                category: sanitizeText(formData.category),
+                quantity: sanitizeText(formData.quantity),
+                expirationTime: sanitizeText(formData.expirationTime),
+                imageUrl: sanitizeUrl(imageUrl)
             };
 
             await axios.post('/api/donations', donationData);
@@ -108,19 +128,22 @@ const DonorDashboard = () => {
         }
     };
 
+    const sanitizedError = sanitizeText(error);
+    const sanitizedSuccess = sanitizeText(success);
+
     return (
         <div className="container mt-5">
             <h2 className="text-center mb-4">Donor Dashboard</h2>
 
             {error && (
                 <div className="alert alert-danger" role="alert">
-                    {error}
+                    {sanitizedError}
                 </div>
             )}
 
             {success && (
                 <div className="alert alert-success" role="alert">
-                    {success}
+                    {sanitizedSuccess}
                 </div>
             )}
 
