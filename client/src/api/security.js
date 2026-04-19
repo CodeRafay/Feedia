@@ -1,6 +1,19 @@
 import axios from 'axios';
 
-export const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+const getSafeBaseUrl = () => {
+    const candidate = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+    try {
+        const parsed = new URL(candidate);
+        if (!parsed.protocol.startsWith('http')) {
+            throw new Error('Invalid protocol');
+        }
+        return parsed.toString().replace(/\/+$/, '');
+    } catch {
+        return 'http://localhost:5000';
+    }
+};
+
+export const API_BASE_URL = getSafeBaseUrl();
 export const API_ORIGIN = new URL(API_BASE_URL).origin;
 
 export const stripSensitiveHeaders = (headers) => {
