@@ -61,28 +61,6 @@ router.get('/my', auth(['donor']), async (req, res) => {
     }
 });
 
-// Get single donation by ID
-router.get('/:id', [
-    param('id').isMongoId().withMessage('Invalid donation id')
-], handleValidation, async (req, res) => {
-    try {
-        const donation = await Donation.findById(req.params.id)
-            .populate('donorId', 'name email location');
-
-        if (!donation) {
-            return res.status(404).json({ message: 'Donation not found' });
-        }
-
-        res.json({
-            message: 'Donation retrieved successfully',
-            donation
-        });
-    } catch (error) {
-        console.error('Get donation error:', error);
-        res.status(500).json({ message: 'Server error' });
-    }
-});
-
 // Create new donation (donor only)
 router.post('/', auth(['donor']), [
     body('foodType').trim().isLength({ min: 2, max: 200 }).withMessage('Food type is required'),
@@ -90,6 +68,7 @@ router.post('/', auth(['donor']), [
     body('quantity').isInt({ min: 1 }).toInt().withMessage('Quantity must be a positive integer'),
     body('expirationTime').isISO8601().withMessage('Expiration time must be a valid date'),
     body('image').optional({ nullable: true, checkFalsy: true }).isString().trim(),
+    body('imageUrl').optional({ nullable: true, checkFalsy: true }).isString().trim(),
     body('latitude').optional({ checkFalsy: true }).isFloat({ min: -90, max: 90 }).toFloat(),
     body('longitude').optional({ checkFalsy: true }).isFloat({ min: -180, max: 180 }).toFloat()
 ], handleValidation, async (req, res) => {
@@ -100,9 +79,12 @@ router.post('/', auth(['donor']), [
             quantity,
             expirationTime,
             image,
+            imageUrl,
             latitude,
             longitude
         } = req.body;
+
+        const finalImage = image || imageUrl || '';
 
         // Create new donation
         const donation = new Donation({
@@ -111,7 +93,7 @@ router.post('/', auth(['donor']), [
             category,
             quantity,
             expirationTime: new Date(expirationTime),
-            image,
+            image: finalImage,
             location: {
                 latitude: latitude || 0,
                 longitude: longitude || 0
@@ -136,6 +118,73 @@ router.post('/', auth(['donor']), [
             });
         }
 
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// Get nearby donations
+router.get('/nearby/:lat/:lng', [
+    param('lat').isFloat({ min: -90, max: 90 }).withMessage('Latitude must be a number'),
+    param('lng').isFloat({ min: -180, max: 180 }).withMessage('Longitude must be a number'),
+    query('maxDistance').optional({ checkFalsy: true }).isFloat({ min: 0.1, max: 500 }).toFloat()
+], handleValidation, async (req, res) => {
+    try {
+        const { lat, lng } = req.params;
+        const { maxDistance = 10 } = req.query; // Default 10 km
+
+        const latitude = parseFloat(lat);
+        const longitude = parseFloat(lng);
+
+        if (isNaN(latitude) || isNaN(longitude)) {
+            return res.status(400).json({ message: 'Invalid coordinates' });
+        }
+
+        // Simple distance-based query (approximation)
+        const latDelta = parseFloat(maxDistance) / 111.32;
+        const lngDelta = parseFloat(maxDistance) / (111.32 * Math.cos(latitude * Math.PI / 180));
+
+        const donations = await Donation.find({
+            status: 'available',
+            expirationTime: { $gt: new Date() },
+            'location.latitude': {
+                $gte: latitude - latDelta,
+                $lte: latitude + latDelta
+            },
+            'location.longitude': {
+                $gte: longitude - lngDelta,
+                $lte: longitude + lngDelta
+            }
+        }).populate('donorId', 'name');
+
+        res.json({
+            message: 'Nearby donations retrieved successfully',
+            count: donations.length,
+            donations
+        });
+    } catch (error) {
+        console.error('Get nearby donations error:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
+
+// Get single donation by ID
+router.get('/:id', [
+    param('id').isMongoId().withMessage('Invalid donation id')
+], handleValidation, async (req, res) => {
+    try {
+        const donation = await Donation.findById(req.params.id)
+            .populate('donorId', 'name email location');
+
+        if (!donation) {
+            return res.status(404).json({ message: 'Donation not found' });
+        }
+
+        res.json({
+            message: 'Donation retrieved successfully',
+            donation
+        });
+    } catch (error) {
+        console.error('Get donation error:', error);
         res.status(500).json({ message: 'Server error' });
     }
 });
@@ -209,51 +258,6 @@ router.delete('/:id', auth(['donor', 'admin']), [
         res.json({ message: 'Donation deleted successfully' });
     } catch (error) {
         console.error('Delete donation error:', error);
-        res.status(500).json({ message: 'Server error' });
-    }
-});
-
-// Get nearby donations
-router.get('/nearby/:lat/:lng', [
-    param('lat').isFloat({ min: -90, max: 90 }).withMessage('Latitude must be a number'),
-    param('lng').isFloat({ min: -180, max: 180 }).withMessage('Longitude must be a number'),
-    query('maxDistance').optional({ checkFalsy: true }).isFloat({ min: 0.1, max: 500 }).toFloat()
-], handleValidation, async (req, res) => {
-    try {
-        const { lat, lng } = req.params;
-        const { maxDistance = 10 } = req.query; // Default 10 km
-
-        const latitude = parseFloat(lat);
-        const longitude = parseFloat(lng);
-
-        if (isNaN(latitude) || isNaN(longitude)) {
-            return res.status(400).json({ message: 'Invalid coordinates' });
-        }
-
-        // Simple distance-based query (approximation)
-        const latDelta = parseFloat(maxDistance) / 111.32;
-        const lngDelta = parseFloat(maxDistance) / (111.32 * Math.cos(latitude * Math.PI / 180));
-
-        const donations = await Donation.find({
-            status: 'available',
-            expirationTime: { $gt: new Date() },
-            'location.latitude': {
-                $gte: latitude - latDelta,
-                $lte: latitude + latDelta
-            },
-            'location.longitude': {
-                $gte: longitude - lngDelta,
-                $lte: longitude + lngDelta
-            }
-        }).populate('donorId', 'name');
-
-        res.json({
-            message: 'Nearby donations retrieved successfully',
-            count: donations.length,
-            donations
-        });
-    } catch (error) {
-        console.error('Get nearby donations error:', error);
         res.status(500).json({ message: 'Server error' });
     }
 });
