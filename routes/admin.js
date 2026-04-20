@@ -5,6 +5,8 @@ const Donation = require('../models/Donation');
 const Pickup = require('../models/Pickup');
 const DropOff = require('../models/DropOff');
 const auth = require('../middleware/auth');
+const { body, param, query } = require('express-validator');
+const { handleValidation } = require('../middleware/validation');
 
 // Get admin dashboard statistics
 router.get('/stats', auth(['admin']), async (req, res) => {
@@ -62,9 +64,15 @@ router.get('/stats', auth(['admin']), async (req, res) => {
 });
 
 // Get all users (admin only)
-router.get('/users', auth(['admin']), async (req, res) => {
+router.get('/users', auth(['admin']), [
+    query('role').optional().isIn(['donor', 'pickup', 'admin']).withMessage('Invalid role filter'),
+    query('page').optional().isInt({ min: 1 }).toInt(),
+    query('limit').optional().isInt({ min: 1, max: 100 }).toInt()
+], handleValidation, async (req, res) => {
     try {
-        const { role, page = 1, limit = 20 } = req.query;
+        const { role } = req.query;
+        const page = req.query.page || 1;
+        const limit = req.query.limit || 20;
         
         const filter = {};
         if (role) {
@@ -93,14 +101,12 @@ router.get('/users', auth(['admin']), async (req, res) => {
 });
 
 // Update user role (admin only)
-router.put('/users/:id/role', auth(['admin']), async (req, res) => {
+router.put('/users/:id/role', auth(['admin']), [
+    param('id').isMongoId().withMessage('Invalid user id'),
+    body('role').isIn(['donor', 'pickup', 'admin']).withMessage('Invalid role')
+], handleValidation, async (req, res) => {
     try {
         const { role } = req.body;
-        const validRoles = ['donor', 'pickup', 'admin'];
-
-        if (!role || !validRoles.includes(role)) {
-            return res.status(400).json({ message: 'Invalid role' });
-        }
 
         const user = await User.findByIdAndUpdate(
             req.params.id,
@@ -123,7 +129,9 @@ router.put('/users/:id/role', auth(['admin']), async (req, res) => {
 });
 
 // Delete user (admin only)
-router.delete('/users/:id', auth(['admin']), async (req, res) => {
+router.delete('/users/:id', auth(['admin']), [
+    param('id').isMongoId().withMessage('Invalid user id')
+], handleValidation, async (req, res) => {
     try {
         const user = await User.findByIdAndDelete(req.params.id);
 
@@ -139,9 +147,15 @@ router.delete('/users/:id', auth(['admin']), async (req, res) => {
 });
 
 // Get all donations for admin
-router.get('/donations', auth(['admin']), async (req, res) => {
+router.get('/donations', auth(['admin']), [
+    query('status').optional().isIn(['available', 'picked_up', 'delivered', 'expired']).withMessage('Invalid status'),
+    query('page').optional().isInt({ min: 1 }).toInt(),
+    query('limit').optional().isInt({ min: 1, max: 100 }).toInt()
+], handleValidation, async (req, res) => {
     try {
-        const { status, page = 1, limit = 20 } = req.query;
+        const { status } = req.query;
+        const page = req.query.page || 1;
+        const limit = req.query.limit || 20;
         
         const filter = {};
         if (status) {
@@ -170,13 +184,14 @@ router.get('/donations', auth(['admin']), async (req, res) => {
 });
 
 // Create drop-off point (admin only)
-router.post('/dropoffs', auth(['admin']), async (req, res) => {
+router.post('/dropoffs', auth(['admin']), [
+    body('name').trim().isLength({ min: 2, max: 200 }).withMessage('Name is required'),
+    body('address').trim().isLength({ min: 5, max: 500 }).withMessage('Address is required'),
+    body('latitude').optional({ checkFalsy: true }).isFloat({ min: -90, max: 90 }).toFloat(),
+    body('longitude').optional({ checkFalsy: true }).isFloat({ min: -180, max: 180 }).toFloat()
+], handleValidation, async (req, res) => {
     try {
         const { name, address, latitude, longitude } = req.body;
-
-        if (!name || !address) {
-            return res.status(400).json({ message: 'Name and address are required' });
-        }
 
         const dropOff = new DropOff({
             name,
@@ -200,7 +215,13 @@ router.post('/dropoffs', auth(['admin']), async (req, res) => {
 });
 
 // Update drop-off point (admin only)
-router.put('/dropoffs/:id', auth(['admin']), async (req, res) => {
+router.put('/dropoffs/:id', auth(['admin']), [
+    param('id').isMongoId().withMessage('Invalid drop-off id'),
+    body('name').optional().trim().isLength({ min: 2, max: 200 }),
+    body('address').optional().trim().isLength({ min: 5, max: 500 }),
+    body('latitude').optional({ checkFalsy: true }).isFloat({ min: -90, max: 90 }).toFloat(),
+    body('longitude').optional({ checkFalsy: true }).isFloat({ min: -180, max: 180 }).toFloat()
+], handleValidation, async (req, res) => {
     try {
         const { name, address, latitude, longitude } = req.body;
 
@@ -232,7 +253,9 @@ router.put('/dropoffs/:id', auth(['admin']), async (req, res) => {
 });
 
 // Delete drop-off point (admin only)
-router.delete('/dropoffs/:id', auth(['admin']), async (req, res) => {
+router.delete('/dropoffs/:id', auth(['admin']), [
+    param('id').isMongoId().withMessage('Invalid drop-off id')
+], handleValidation, async (req, res) => {
     try {
         const dropOff = await DropOff.findByIdAndDelete(req.params.id);
 

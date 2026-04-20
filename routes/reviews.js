@@ -3,9 +3,13 @@ const router = express.Router();
 const Review = require('../models/Review');
 const User = require('../models/User');
 const auth = require('../middleware/auth');
+const { body, param } = require('express-validator');
+const { handleValidation } = require('../middleware/validation');
 
 // Get reviews for a user
-router.get('/user/:userId', async (req, res) => {
+router.get('/user/:userId', [
+    param('userId').isMongoId().withMessage('Invalid user id')
+], handleValidation, async (req, res) => {
     try {
         const reviews = await Review.find({ revieweeId: req.params.userId })
             .populate('reviewerId', 'name')
@@ -27,16 +31,16 @@ router.get('/user/:userId', async (req, res) => {
 });
 
 // Create a review
-router.post('/', auth([]), async (req, res) => {
+router.post('/', auth([]), [
+    body('revieweeId').isMongoId().withMessage('Reviewee ID is required'),
+    body('donationId').optional({ nullable: true }).isMongoId(),
+    body('pickupId').optional({ nullable: true }).isMongoId(),
+    body('rating').isInt({ min: 1, max: 5 }).toInt().withMessage('Rating must be between 1 and 5'),
+    body('comment').optional({ nullable: true }).trim().escape(),
+    body('type').isIn(['donor_to_pickup', 'pickup_to_donor', 'beneficiary_feedback']).withMessage('Invalid review type')
+], handleValidation, async (req, res) => {
     try {
         const { revieweeId, donationId, pickupId, rating, comment, type } = req.body;
-
-        // Validate required fields
-        if (!revieweeId || !rating || !type) {
-            return res.status(400).json({ 
-                message: 'Reviewee ID, rating, and type are required' 
-            });
-        }
 
         // Prevent self-review
         if (revieweeId === req.user.userId) {
@@ -96,7 +100,11 @@ router.post('/', auth([]), async (req, res) => {
 });
 
 // Update a review
-router.put('/:id', auth([]), async (req, res) => {
+router.put('/:id', auth([]), [
+    param('id').isMongoId().withMessage('Invalid review id'),
+    body('rating').optional().isInt({ min: 1, max: 5 }).toInt(),
+    body('comment').optional({ nullable: true }).trim().escape()
+], handleValidation, async (req, res) => {
     try {
         const { rating, comment } = req.body;
         
@@ -127,7 +135,9 @@ router.put('/:id', auth([]), async (req, res) => {
 });
 
 // Delete a review
-router.delete('/:id', auth([]), async (req, res) => {
+router.delete('/:id', auth([]), [
+    param('id').isMongoId().withMessage('Invalid review id')
+], handleValidation, async (req, res) => {
     try {
         const review = await Review.findById(req.params.id);
         

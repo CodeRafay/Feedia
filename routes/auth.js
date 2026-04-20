@@ -3,22 +3,20 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const { body } = require('express-validator');
+const { handleValidation } = require('../middleware/validation');
 
 // Register new user
-router.post('/register', async (req, res) => {
+router.post('/register', [
+    body('name').trim().isLength({ min: 2, max: 100 }).withMessage('Name is required'),
+    body('email').isEmail().normalizeEmail().withMessage('Valid email is required'),
+    body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
+    body('role').isIn(['donor', 'pickup', 'admin']).withMessage('Invalid role'),
+    body('latitude').optional({ checkFalsy: true }).isFloat({ min: -90, max: 90 }).toFloat(),
+    body('longitude').optional({ checkFalsy: true }).isFloat({ min: -180, max: 180 }).toFloat()
+], handleValidation, async (req, res) => {
     try {
         const { name, email, password, role, latitude, longitude } = req.body;
-
-        // Validate required fields
-        if (!name || !email || !password || !role) {
-            return res.status(400).json({ message: 'Name, email, password, and role are required' });
-        }
-
-        // Validate role
-        const validRoles = ['donor', 'pickup', 'admin'];
-        if (!validRoles.includes(role)) {
-            return res.status(400).json({ message: 'Invalid role. Must be donor, pickup, or admin' });
-        }
 
         // Check if user already exists
         const existingUser = await User.findOne({ email });
@@ -62,14 +60,12 @@ router.post('/register', async (req, res) => {
 });
 
 // Login user
-router.post('/login', async (req, res) => {
+router.post('/login', [
+    body('email').isEmail().normalizeEmail().withMessage('Valid email is required'),
+    body('password').isString().notEmpty().withMessage('Password is required')
+], handleValidation, async (req, res) => {
     try {
         const { email, password } = req.body;
-
-        // Validate required fields
-        if (!email || !password) {
-            return res.status(400).json({ message: 'Email and password are required' });
-        }
 
         // Find user by email
         const user = await User.findOne({ email });

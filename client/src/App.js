@@ -8,10 +8,9 @@ import PickupDashboard from './components/PickupDashboard';
 import AdminDashboard from './components/AdminDashboard';
 import DropOffList from './components/DropOffList';
 import DonationList from './components/DonationList';
+import { configureAxiosSecurity } from './api/security';
 
-// Configure axios base URL based on environment
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
-axios.defaults.baseURL = API_BASE_URL;
+configureAxiosSecurity(axios);
 
 // Home component
 const Home = () => (

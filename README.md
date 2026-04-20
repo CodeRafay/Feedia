@@ -38,6 +38,7 @@ Feedia is a community-driven platform designed to:
 - ✅ View community drop-off locations
 - ✅ Google Maps integration for location viewing
 - ✅ Distance-based search
+- ✅ Secure nearby lookup via POST body (keeps sensitive coordinates out of URLs)
 
 ### Admin Dashboard
 - ✅ Platform-wide statistics
