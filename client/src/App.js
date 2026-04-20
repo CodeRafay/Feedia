@@ -8,6 +8,7 @@ import PickupDashboard from './components/PickupDashboard';
 import AdminDashboard from './components/AdminDashboard';
 import DropOffList from './components/DropOffList';
 import DonationList from './components/DonationList';
+import Reviews from './components/Reviews';
 import { configureAxiosSecurity } from './api/security';
 
 configureAxiosSecurity(axios);
@@ -142,6 +143,11 @@ function App() {
               </li>
               {isAuthenticated && (
                 <li className="nav-item">
+                  <Link className="nav-link" to="/reviews">Reviews</Link>
+                </li>
+              )}
+              {isAuthenticated && (
+                <li className="nav-item">
                   <Link className="nav-link" to={getDashboardLink()}>Dashboard</Link>
                 </li>
               )}
@@ -182,6 +188,10 @@ function App() {
               ? <Login onLoginSuccess={handleLoginSuccess} /> 
               : <Navigate to={getDashboardLink()} />
           } 
+        />
+        <Route 
+          path="/reviews" 
+          element={isAuthenticated ? <Reviews /> : <Navigate to="/login" />} 
         />
         <Route 
           path="/register" 

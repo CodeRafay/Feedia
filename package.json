@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "build": "cd client && npm run build"
+    "build": "cd client && npm run build",
+    "test:api": "NODE_ENV=test jest --runInBand"
   },
   "keywords": [
     "food-sharing",
@@ -17,7 +18,10 @@
   "author": "Rafay Adeel",
   "license": "MIT",
   "devDependencies": {
-    "nodemon": "^3.1.11"
+    "jest": "^29.7.0",
+    "mongodb-memory-server": "^10.1.4",
+    "nodemon": "^3.1.11",
+    "supertest": "^6.3.4"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -34,5 +38,11 @@
   },
   "engines": {
     "node": ">=14.0.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/tests/**/*.test.js"
+    ]
   }
 }
