@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 
 const DropOffList = () => {
@@ -6,20 +6,72 @@ const DropOffList = () => {
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(true);
     const [selectedLocation, setSelectedLocation] = useState(null);
+    const [latitude, setLatitude] = useState('');
+    const [longitude, setLongitude] = useState('');
+    const [maxDistance, setMaxDistance] = useState(10);
+    const [usingNearby, setUsingNearby] = useState(false);
 
-    useEffect(() => {
-        fetchDropOffs();
-    }, []);
-
-    const fetchDropOffs = async () => {
+    const fetchDropOffs = useCallback(async (useNearby = false) => {
         try {
-            const response = await axios.get('/api/dropoffs');
+            setIsLoading(true);
+            let response;
+
+            if (useNearby && latitude !== '' && longitude !== '') {
+                response = await axios.post('/api/dropoffs/nearby', {
+                    latitude: Number(latitude),
+                    longitude: Number(longitude),
+                    maxDistance: Number(maxDistance) || 10
+                });
+                setUsingNearby(true);
+            } else {
+                response = await axios.get('/api/dropoffs');
+                setUsingNearby(false);
+            }
+
             setDropOffs(response.data.dropOffs);
         } catch (err) {
             setError('Failed to fetch drop-off points. Please try again later.');
         } finally {
             setIsLoading(false);
         }
+    }, [latitude, longitude, maxDistance]);
+
+    useEffect(() => {
+        fetchDropOffs();
+    }, [fetchDropOffs]);
+
+    const handleNearbySearch = () => {
+        if (latitude === '' || longitude === '') {
+            setError('Please provide latitude and longitude to search nearby drop-offs.');
+            return;
+        }
+        setError('');
+        fetchDropOffs(true);
+    };
+
+    const useMyLocation = () => {
+        if (!navigator.geolocation) {
+            setError('Geolocation is not supported by your browser.');
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                setLatitude(position.coords.latitude.toFixed(6));
+                setLongitude(position.coords.longitude.toFixed(6));
+                setError('');
+            },
+            () => setError('Unable to retrieve your location. Please enter coordinates manually.'),
+            { timeout: 8000 }
+        );
+    };
+
+    const resetFilters = () => {
+        setLatitude('');
+        setLongitude('');
+        setUsingNearby(false);
+        setError('');
+        fetchDropOffs(false);
     };
 
     const handleViewLocation = (dropOff) => {
@@ -55,6 +107,67 @@ const DropOffList = () => {
     return (
         <div className="container mt-5">
             <h2 className="text-center mb-4">Drop-Off Points</h2>
+
+            <div className="card shadow-sm mb-4">
+                <div className="card-body">
+                    <div className="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
+                        <h5 className="mb-0">Find Nearby Drop-Off Points</h5>
+                        <div>
+                            <button className="btn btn-outline-secondary btn-sm me-2" onClick={useMyLocation}>
+                                Use My Location
+                            </button>
+                            <button className="btn btn-link btn-sm" onClick={resetFilters} disabled={!usingNearby && !latitude && !longitude}>
+                                Clear
+                            </button>
+                        </div>
+                    </div>
+                    <div className="row g-3">
+                        <div className="col-md-4">
+                            <label className="form-label">Latitude</label>
+                            <input
+                                type="number"
+                                className="form-control"
+                                value={latitude}
+                                onChange={(e) => setLatitude(e.target.value)}
+                                min="-90"
+                                max="90"
+                                step="any"
+                            />
+                        </div>
+                        <div className="col-md-4">
+                            <label className="form-label">Longitude</label>
+                            <input
+                                type="number"
+                                className="form-control"
+                                value={longitude}
+                                onChange={(e) => setLongitude(e.target.value)}
+                                min="-180"
+                                max="180"
+                                step="any"
+                            />
+                        </div>
+                        <div className="col-md-4">
+                            <label className="form-label">Max Distance (km)</label>
+                            <input
+                                type="number"
+                                className="form-control"
+                                value={maxDistance}
+                                onChange={(e) => setMaxDistance(Number(e.target.value) || 10)}
+                                min="1"
+                                max="500"
+                            />
+                        </div>
+                    </div>
+                    <button className="btn btn-primary mt-3" onClick={handleNearbySearch}>
+                        Search Nearby
+                    </button>
+                    {usingNearby && (
+                        <p className="text-muted small mt-2 mb-0">
+                            Showing drop-off points near your selected coordinates.
+                        </p>
+                    )}
+                </div>
+            </div>
 
             {dropOffs.length === 0 ? (
                 <div className="alert alert-info" role="alert">

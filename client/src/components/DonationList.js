@@ -5,11 +5,28 @@ const DonationList = ({ showAll = false }) => {
     const [donations, setDonations] = useState([]);
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(true);
+    const [searchLat, setSearchLat] = useState('');
+    const [searchLng, setSearchLng] = useState('');
+    const [maxDistance, setMaxDistance] = useState(10);
+    const [searchingNearby, setSearchingNearby] = useState(false);
 
     const fetchDonations = useCallback(async () => {
+        setIsLoading(true);
         try {
-            const endpoint = showAll ? '/api/donations' : '/api/donations/my';
-            const response = await axios.get(endpoint);
+            const canSearchNearby = showAll && searchLat !== '' && searchLng !== '';
+            let response;
+
+            if (canSearchNearby) {
+                setSearchingNearby(true);
+                response = await axios.get(`/api/donations/nearby/${searchLat}/${searchLng}`, {
+                    params: { maxDistance }
+                });
+            } else {
+                const endpoint = showAll ? '/api/donations' : '/api/donations/my';
+                response = await axios.get(endpoint);
+                setSearchingNearby(false);
+            }
+
             setDonations(response.data.donations || []);
         } catch (err) {
             // If fetching personal donations fails, try all donations
@@ -26,11 +43,38 @@ const DonationList = ({ showAll = false }) => {
         } finally {
             setIsLoading(false);
         }
-    }, [showAll]);
+    }, [showAll, searchLat, searchLng, maxDistance]);
 
     useEffect(() => {
         fetchDonations();
     }, [fetchDonations]);
+
+    const useMyLocation = () => {
+        if (!navigator.geolocation) {
+            setError('Geolocation is not supported by your browser.');
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                setSearchLat(position.coords.latitude.toFixed(6));
+                setSearchLng(position.coords.longitude.toFixed(6));
+                setError('');
+            },
+            () => {
+                setError('Unable to retrieve your location. Please enter coordinates manually.');
+            },
+            { timeout: 8000 }
+        );
+    };
+
+    const clearNearbyFilter = () => {
+        setSearchLat('');
+        setSearchLng('');
+        setSearchingNearby(false);
+        setError('');
+        fetchDonations();
+    };
 
     const getStatusBadge = (status, expirationTime) => {
         const now = new Date();
@@ -88,21 +132,79 @@ const DonationList = ({ showAll = false }) => {
         );
     }
 
-    if (donations.length === 0) {
-        return (
-            <div className={showAll ? 'container mt-4' : 'mt-4'}>
+    return (
+        <div className={showAll ? 'container mt-4' : 'mt-4'}>
+            <div className="d-flex align-items-center justify-content-between mb-3">
+                <h3 className="mb-0">{showAll ? 'Available Donations' : 'Your Donations'}</h3>
+            </div>
+
+            {showAll && (
+                <div className="card shadow-sm mb-4">
+                    <div className="card-body">
+                        <div className="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
+                            <h5 className="mb-0">Find Nearby Donations</h5>
+                            <div>
+                                <button className="btn btn-outline-secondary btn-sm me-2" onClick={useMyLocation}>
+                                    Use My Location
+                                </button>
+                                <button className="btn btn-link btn-sm" onClick={clearNearbyFilter} disabled={!searchingNearby && !searchLat && !searchLng}>
+                                    Clear
+                                </button>
+                            </div>
+                        </div>
+                        <div className="row g-3">
+                            <div className="col-md-4">
+                                <label className="form-label">Latitude</label>
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    value={searchLat}
+                                    onChange={(e) => setSearchLat(e.target.value)}
+                                    min="-90"
+                                    max="90"
+                                    step="any"
+                                />
+                            </div>
+                            <div className="col-md-4">
+                                <label className="form-label">Longitude</label>
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    value={searchLng}
+                                    onChange={(e) => setSearchLng(e.target.value)}
+                                    min="-180"
+                                    max="180"
+                                    step="any"
+                                />
+                            </div>
+                            <div className="col-md-4">
+                                <label className="form-label">Max Distance (km)</label>
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    value={maxDistance}
+                                    onChange={(e) => setMaxDistance(Number(e.target.value) || 10)}
+                                    min="1"
+                                    max="500"
+                                />
+                            </div>
+                        </div>
+                        <p className="text-muted small mt-3 mb-0">
+                            {searchingNearby
+                                ? 'Showing donations near your selected coordinates.'
+                                : 'Enter coordinates to filter donations by proximity.'}
+                        </p>
+                    </div>
+                </div>
+            )}
+
+            {donations.length === 0 ? (
                 <div className="alert alert-info" role="alert">
                     {showAll 
                         ? 'No donations available at the moment. Check back later!'
                         : 'No donations found. Start by creating a new donation!'}
                 </div>
-            </div>
-        );
-    }
-
-    return (
-        <div className={showAll ? 'container mt-4' : 'mt-4'}>
-            <h3 className="mb-3">{showAll ? 'Available Donations' : 'Your Donations'}</h3>
+            ) : (
             <div className="table-responsive">
                 <table className="table table-striped table-hover">
                     <thead className="table-light">
@@ -134,6 +236,7 @@ const DonationList = ({ showAll = false }) => {
                     </tbody>
                 </table>
             </div>
+            )}
         </div>
     );
 };

@@ -14,7 +14,7 @@ const DonorDashboard = () => {
         expirationTime: '',
         latitude: '',
         longitude: '',
-        imageUrl: ''
+        image: ''
     });
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
@@ -94,18 +94,23 @@ const DonorDashboard = () => {
         setIsLoading(true);
 
         try {
-            let imageUrl = '';
+            let uploadedImageUrl = '';
             if (selectedImage) {
-                imageUrl = await uploadImage(selectedImage);
+                uploadedImageUrl = await uploadImage(selectedImage);
             }
 
+            const latitude = Number(formData.latitude);
+            const longitude = Number(formData.longitude);
+            const quantity = Number(formData.quantity);
+
             const donationData = {
-                ...formData,
                 foodType: sanitizeText(formData.foodType),
                 category: sanitizeText(formData.category),
-                quantity: sanitizeText(formData.quantity),
+                quantity: Number.isFinite(quantity) ? quantity : 0,
                 expirationTime: sanitizeText(formData.expirationTime),
-                imageUrl: sanitizeUrl(imageUrl)
+                latitude: Number.isFinite(latitude) ? latitude : undefined,
+                longitude: Number.isFinite(longitude) ? longitude : undefined,
+                image: sanitizeUrl(uploadedImageUrl || formData.image)
             };
 
             await axios.post('/api/donations', donationData);
@@ -117,7 +122,7 @@ const DonorDashboard = () => {
                 expirationTime: '',
                 latitude: '',
                 longitude: '',
-                imageUrl: ''
+                image: ''
             });
             setSelectedImage(null);
             setImagePreview('');
