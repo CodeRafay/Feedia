@@ -13,12 +13,13 @@ router.get('/user/:userId', [
     param('userId').isMongoId().withMessage('Invalid user id')
 ], handleValidation, async (req, res) => {
     try {
-        const reviews = await Review.find({ revieweeId: req.params.userId })
+        const userId = String(req.params.userId);
+        const reviews = await Review.find({ revieweeId: userId })
             .populate('reviewerId', 'name')
             .populate('donationId', 'foodType')
             .sort({ createdAt: -1 });
 
-        const stats = await Review.calculateAverageRating(req.params.userId);
+        const stats = await Review.calculateAverageRating(userId);
 
         res.json({
             message: 'Reviews retrieved successfully',
@@ -42,7 +43,10 @@ router.post('/', auth([]), [
     body('type').isIn(['donor_to_pickup', 'pickup_to_donor', 'beneficiary_feedback']).withMessage('Invalid review type')
 ], handleValidation, async (req, res) => {
     try {
-        const { revieweeId, donationId, pickupId, rating, comment, type } = req.body;
+        const { rating, comment, type } = req.body;
+        const revieweeId = String(req.body.revieweeId);
+        const donationId = String(req.body.donationId);
+        const pickupId = req.body.pickupId ? String(req.body.pickupId) : undefined;
 
         // Prevent self-review
         if (revieweeId === req.user.userId) {
@@ -125,9 +129,9 @@ router.put('/:id', auth([]), [
 ], handleValidation, async (req, res) => {
     try {
         const { rating, comment } = req.body;
-        
-        const review = await Review.findById(req.params.id);
-        
+
+        const review = await Review.findById(String(req.params.id));
+
         if (!review) {
             return res.status(404).json({ message: 'Review not found' });
         }
@@ -157,8 +161,8 @@ router.delete('/:id', auth([]), [
     param('id').isMongoId().withMessage('Invalid review id')
 ], handleValidation, async (req, res) => {
     try {
-        const review = await Review.findById(req.params.id);
-        
+        const review = await Review.findById(String(req.params.id));
+
         if (!review) {
             return res.status(404).json({ message: 'Review not found' });
         }
@@ -171,7 +175,7 @@ router.delete('/:id', auth([]), [
             return res.status(403).json({ message: 'Not authorized to delete this review' });
         }
 
-        await Review.findByIdAndDelete(req.params.id);
+        await Review.findByIdAndDelete(String(req.params.id));
 
         res.json({ message: 'Review deleted successfully' });
     } catch (error) {

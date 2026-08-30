@@ -71,12 +71,12 @@ router.get('/users', auth(['admin']), [
 ], handleValidation, async (req, res) => {
     try {
         const { role } = req.query;
-        const page = req.query.page || 1;
-        const limit = req.query.limit || 20;
-        
+        const page = Number(req.query.page) || 1;
+        const limit = Number(req.query.limit) || 20;
+
         const filter = {};
         if (role) {
-            filter.role = role;
+            filter.role = String(role);
         }
 
         const users = await User.find(filter)
@@ -109,8 +109,8 @@ router.put('/users/:id/role', auth(['admin']), [
         const { role } = req.body;
 
         const user = await User.findByIdAndUpdate(
-            req.params.id,
-            { role },
+            String(req.params.id),
+            { role: String(role) },
             { new: true }
         ).select('-password');
 
@@ -133,7 +133,7 @@ router.delete('/users/:id', auth(['admin']), [
     param('id').isMongoId().withMessage('Invalid user id')
 ], handleValidation, async (req, res) => {
     try {
-        const user = await User.findByIdAndDelete(req.params.id);
+        const user = await User.findByIdAndDelete(String(req.params.id));
 
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
@@ -154,12 +154,12 @@ router.get('/donations', auth(['admin']), [
 ], handleValidation, async (req, res) => {
     try {
         const { status } = req.query;
-        const page = req.query.page || 1;
-        const limit = req.query.limit || 20;
-        
+        const page = Number(req.query.page) || 1;
+        const limit = Number(req.query.limit) || 20;
+
         const filter = {};
         if (status) {
-            filter.status = status;
+            filter.status = String(status);
         }
 
         const donations = await Donation.find(filter)
@@ -233,7 +233,7 @@ router.put('/dropoffs/:id', auth(['admin']), [
         }
 
         const dropOff = await DropOff.findByIdAndUpdate(
-            req.params.id,
+            String(req.params.id),
             updateData,
             { new: true }
         );
@@ -257,7 +257,7 @@ router.delete('/dropoffs/:id', auth(['admin']), [
     param('id').isMongoId().withMessage('Invalid drop-off id')
 ], handleValidation, async (req, res) => {
     try {
-        const dropOff = await DropOff.findByIdAndDelete(req.params.id);
+        const dropOff = await DropOff.findByIdAndDelete(String(req.params.id));
 
         if (!dropOff) {
             return res.status(404).json({ message: 'Drop-off point not found' });

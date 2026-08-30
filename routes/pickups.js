@@ -24,7 +24,7 @@ router.get('/', auth(['admin']), [
         const { status } = req.query;
         const filter = {};
         if (status && VALID_PICKUP_STATUSES.includes(status)) {
-            filter.status = status;
+            filter.status = String(status);
         }
 
         const pickups = await Pickup.find(filter)
@@ -66,7 +66,7 @@ router.get('/:id', auth([]), [
     param('id').isMongoId().withMessage('Invalid pickup id')
 ], handleValidation, async (req, res) => {
     try {
-        const pickup = await Pickup.findById(req.params.id)
+        const pickup = await Pickup.findById(String(req.params.id))
             .populate('donationId')
             .populate('pickupUserId', 'name email');
 
@@ -89,7 +89,7 @@ router.post('/', auth(['pickup']), [
     body('donationId').isMongoId().withMessage('Donation ID is required')
 ], handleValidation, async (req, res) => {
     try {
-        const { donationId } = req.body;
+        const donationId = String(req.body.donationId);
 
         // Check if donation exists and is available
         const donation = await Donation.findById(donationId);
@@ -153,8 +153,8 @@ router.put('/:id', auth(['pickup', 'admin']), [
 ], handleValidation, async (req, res) => {
     try {
         const { status } = req.body;
-        
-        const pickup = await Pickup.findById(req.params.id);
+
+        const pickup = await Pickup.findById(String(req.params.id));
         if (!pickup) {
             return res.status(404).json({ message: 'Pickup not found' });
         }
@@ -197,7 +197,7 @@ router.delete('/:id', auth(['pickup', 'admin']), [
     param('id').isMongoId().withMessage('Invalid pickup id')
 ], handleValidation, async (req, res) => {
     try {
-        const pickup = await Pickup.findById(req.params.id);
+        const pickup = await Pickup.findById(String(req.params.id));
         if (!pickup) {
             return res.status(404).json({ message: 'Pickup not found' });
         }
@@ -218,7 +218,7 @@ router.delete('/:id', auth(['pickup', 'admin']), [
         // Restore donation status to available
         await Donation.findByIdAndUpdate(pickup.donationId, { status: 'available' });
 
-        await Pickup.findByIdAndDelete(req.params.id);
+        await Pickup.findByIdAndDelete(String(req.params.id));
 
         res.json({ message: 'Pickup cancelled successfully' });
     } catch (error) {

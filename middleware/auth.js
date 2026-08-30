@@ -13,8 +13,13 @@ const auth = (roles = []) => {
             // Verify token
             const decoded = jwt.verify(token, process.env.JWT_SECRET, { algorithms: ['HS256'] });
 
-            // Add user from payload
-            req.user = decoded;
+            // Add user from payload, narrowed to primitives so no claim can reach a
+            // query as an object/operator
+            req.user = {
+                userId: String(decoded.userId),
+                role: String(decoded.role),
+                name: String(decoded.name ?? '')
+            };
 
             // Check role if roles are specified
             if (roles.length && !roles.includes(req.user.role)) {

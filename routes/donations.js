@@ -13,14 +13,14 @@ router.get('/', [
 ], handleValidation, async (req, res) => {
     try {
         const { status, category } = req.query;
-        
+
         // Build query filter
         const filter = {};
         if (status) {
-            filter.status = status;
+            filter.status = String(status);
         }
         if (category) {
-            filter.category = category;
+            filter.category = String(category);
         }
         
         // If no status filter, default to showing available donations
@@ -173,7 +173,7 @@ router.get('/:id', [
     param('id').isMongoId().withMessage('Invalid donation id')
 ], handleValidation, async (req, res) => {
     try {
-        const donation = await Donation.findById(req.params.id)
+        const donation = await Donation.findById(String(req.params.id))
             .populate('donorId', 'name');
 
         if (!donation) {
@@ -197,7 +197,7 @@ router.put('/:id', auth(['donor', 'pickup', 'admin']), [
 ], handleValidation, async (req, res) => {
     try {
         const { status } = req.body;
-        const donation = await Donation.findById(req.params.id);
+        const donation = await Donation.findById(String(req.params.id));
 
         if (!donation) {
             return res.status(404).json({ message: 'Donation not found' });
@@ -249,7 +249,7 @@ router.delete('/:id', auth(['donor', 'admin']), [
     param('id').isMongoId().withMessage('Invalid donation id')
 ], handleValidation, async (req, res) => {
     try {
-        const donation = await Donation.findById(req.params.id);
+        const donation = await Donation.findById(String(req.params.id));
 
         if (!donation) {
             return res.status(404).json({ message: 'Donation not found' });
@@ -263,7 +263,7 @@ router.delete('/:id', auth(['donor', 'admin']), [
             return res.status(403).json({ message: 'Not authorized to delete this donation' });
         }
 
-        await Donation.findByIdAndDelete(req.params.id);
+        await Donation.findByIdAndDelete(String(req.params.id));
 
         res.json({ message: 'Donation deleted successfully' });
     } catch (error) {

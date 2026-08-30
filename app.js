@@ -11,6 +11,7 @@ const dropOffRoutes = require('./routes/dropoffs');
 const uploadRoutes = require('./routes/uploads');
 const adminRoutes = require('./routes/admin');
 const reviewRoutes = require('./routes/reviews');
+const { sanitizeRequest } = require('./middleware/validation');
 
 const app = express();
 app.disable('x-powered-by');
@@ -47,6 +48,7 @@ app.use((req, res, next) => {
 });
 
 app.use(express.json({ limit: '1mb' }));
+app.use(sanitizeRequest);
 app.use(express.static(path.join(__dirname, 'client', 'build')));
 app.use(express.static(path.join(__dirname, 'client', 'public')));
 

@@ -16,7 +16,8 @@ router.post('/register', [
     body('longitude').optional({ checkFalsy: true }).isFloat({ min: -180, max: 180 }).toFloat()
 ], handleValidation, async (req, res) => {
     try {
-        const { name, email, password, role, latitude, longitude } = req.body;
+        const { name, password, role, latitude, longitude } = req.body;
+        const email = String(req.body.email);
 
         // Check if user already exists
         const existingUser = await User.findOne({ email });
@@ -65,7 +66,8 @@ router.post('/login', [
     body('password').isString().notEmpty().withMessage('Password is required')
 ], handleValidation, async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { password } = req.body;
+        const email = String(req.body.email);
 
         // Find user by email
         const user = await User.findOne({ email });
@@ -106,7 +108,7 @@ router.post('/login', [
 // Get current user profile
 router.get('/me', require('../middleware/auth')([]), async (req, res) => {
     try {
-        const user = await User.findById(req.user.userId).select('-password');
+        const user = await User.findById(String(req.user.userId)).select('-password');
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
