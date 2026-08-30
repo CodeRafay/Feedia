@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const Review = require('../models/Review');
 const User = require('../models/User');
+const Donation = require('../models/Donation');
+const Pickup = require('../models/Pickup');
 const auth = require('../middleware/auth');
 const { body, param } = require('express-validator');
 const { handleValidation } = require('../middleware/validation');
@@ -33,7 +35,7 @@ router.get('/user/:userId', [
 // Create a review
 router.post('/', auth([]), [
     body('revieweeId').isMongoId().withMessage('Reviewee ID is required'),
-    body('donationId').optional({ nullable: true }).isMongoId(),
+    body('donationId').isMongoId().withMessage('A related donation is required'),
     body('pickupId').optional({ nullable: true }).isMongoId(),
     body('rating').isInt({ min: 1, max: 5 }).toInt().withMessage('Rating must be between 1 and 5'),
     body('comment').optional({ nullable: true }).trim().escape(),
@@ -51,6 +53,22 @@ router.post('/', auth([]), [
         const reviewee = await User.findById(revieweeId);
         if (!reviewee) {
             return res.status(404).json({ message: 'Reviewee not found' });
+        }
+
+        // Verify reviewer and reviewee were both actually part of this donation's transaction
+        const donation = await Donation.findById(donationId);
+        if (!donation) {
+            return res.status(404).json({ message: 'Donation not found' });
+        }
+        const pickupRecord = await Pickup.findOne({ donationId });
+        const participantIds = [donation.donorId.toString()];
+        if (pickupRecord) {
+            participantIds.push(pickupRecord.pickupUserId.toString());
+        }
+        if (!participantIds.includes(req.user.userId) || !participantIds.includes(revieweeId)) {
+            return res.status(403).json({
+                message: 'You can only review users you transacted with on this donation'
+            });
         }
 
         // Check for existing review for same donation/pickup

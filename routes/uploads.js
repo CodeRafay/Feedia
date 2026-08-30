@@ -3,6 +3,7 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const auth = require('../middleware/auth');
 
 // Ensure uploads directory exists
 const uploadsDir = path.join(__dirname, '..', 'uploads');
@@ -60,7 +61,7 @@ const upload = multer({
 });
 
 // POST /api/uploads - Upload a single image
-router.post('/', upload.single('image'), async (req, res) => {
+router.post('/', auth([]), upload.single('image'), async (req, res) => {
     try {
         if (!req.file) {
             return res.status(400).json({
@@ -116,8 +117,8 @@ router.get('/:filename', async (req, res) => {
     }
 });
 
-// DELETE /api/uploads/:filename - Delete image
-router.delete('/:filename', async (req, res) => {
+// DELETE /api/uploads/:filename - Delete image (admin only; uploads aren't tied to an owner)
+router.delete('/:filename', auth(['admin']), async (req, res) => {
     try {
         const filePath = getSafeUploadPath(req.params.filename);
         if (!filePath) {

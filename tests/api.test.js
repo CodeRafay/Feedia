@@ -120,10 +120,10 @@ describe('API integration (mocked DB)', () => {
     });
 
     test('reviews API supports create, update, and delete', async () => {
-        const { token: reviewerToken } = setAuth('donor', 'Reviewer');
+        const { token: reviewerToken, userId: reviewerId } = setAuth('donor', 'Reviewer');
         const reviewDoc = {
             _id: oid('15'),
-            reviewerId: oid('97'),
+            reviewerId,
             revieweeId: oid('16'),
             rating: 5,
             comment: 'Great',
@@ -131,6 +131,8 @@ describe('API integration (mocked DB)', () => {
         };
 
         jest.spyOn(User, 'findById').mockResolvedValue({ _id: oid('16'), name: 'Target' });
+        jest.spyOn(Donation, 'findById').mockResolvedValue({ _id: oid('18'), donorId: reviewerId });
+        jest.spyOn(Pickup, 'findOne').mockResolvedValue({ pickupUserId: oid('16') });
         jest.spyOn(Review.prototype, 'save').mockResolvedValue(reviewDoc);
         jest.spyOn(Review, 'findOne').mockResolvedValue(null);
         jest.spyOn(Review, 'findById').mockResolvedValue({ ...reviewDoc, save: jest.fn().mockResolvedValue({ ...reviewDoc, rating: 4 }) });
@@ -141,6 +143,7 @@ describe('API integration (mocked DB)', () => {
             .set('Authorization', `Bearer ${reviewerToken}`)
             .send({
                 revieweeId: oid('16'),
+                donationId: oid('18'),
                 rating: 5,
                 comment: 'Great experience',
                 type: 'donor_to_pickup'

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Donation = require('../models/Donation');
+const Pickup = require('../models/Pickup');
 const auth = require('../middleware/auth');
 const { body, param, query } = require('express-validator');
 const { handleValidation } = require('../middleware/validation');
@@ -29,7 +30,7 @@ router.get('/', [
         }
 
         const donations = await Donation.find(filter)
-            .populate('donorId', 'name email')
+            .populate('donorId', 'name')
             .sort({ createdAt: -1 })
             .limit(100);
 
@@ -173,7 +174,7 @@ router.get('/:id', [
 ], handleValidation, async (req, res) => {
     try {
         const donation = await Donation.findById(req.params.id)
-            .populate('donorId', 'name email location');
+            .populate('donorId', 'name');
 
         if (!donation) {
             return res.status(404).json({ message: 'Donation not found' });
@@ -205,9 +206,18 @@ router.put('/:id', auth(['donor', 'pickup', 'admin']), [
         // Check permissions
         const isOwner = donation.donorId.toString() === req.user.userId;
         const isAdmin = req.user.role === 'admin';
-        const isPickup = req.user.role === 'pickup';
 
-        if (!isOwner && !isAdmin && !isPickup) {
+        // A pickup-role user may only update a donation they've actually been assigned to
+        let isAssignedPickup = false;
+        if (req.user.role === 'pickup') {
+            const pickupRecord = await Pickup.findOne({
+                donationId: donation._id,
+                pickupUserId: req.user.userId
+            });
+            isAssignedPickup = !!pickupRecord;
+        }
+
+        if (!isOwner && !isAdmin && !isAssignedPickup) {
             return res.status(403).json({ message: 'Not authorized to update this donation' });
         }
 

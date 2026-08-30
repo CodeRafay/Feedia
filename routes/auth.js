@@ -11,7 +11,7 @@ router.post('/register', [
     body('name').trim().isLength({ min: 2, max: 100 }).withMessage('Name is required'),
     body('email').isEmail().normalizeEmail().withMessage('Valid email is required'),
     body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
-    body('role').isIn(['donor', 'pickup', 'admin']).withMessage('Invalid role'),
+    body('role').isIn(['donor', 'pickup']).withMessage('Invalid role'),
     body('latitude').optional({ checkFalsy: true }).isFloat({ min: -90, max: 90 }).toFloat(),
     body('longitude').optional({ checkFalsy: true }).isFloat({ min: -180, max: 180 }).toFloat()
 ], handleValidation, async (req, res) => {

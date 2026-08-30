@@ -227,6 +227,10 @@ router.delete('/:id', auth(['pickup', 'admin']), [
     }
 });
 
+const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (c) => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+));
+
 // Helper function to send email notification
 async function sendPickupNotification(donation, pickupUserName) {
     try {
@@ -256,9 +260,9 @@ async function sendPickupNotification(donation, pickupUserName) {
             to: donor.email,
             subject: 'Pickup Request for Your Donation',
             html: `
-                <h2>Hello ${donor.name}!</h2>
-                <p>Your donation of <strong>${donation.foodType}</strong> has been requested for pickup.</p>
-                <p>Pickup service: ${pickupUserName || 'A volunteer'}</p>
+                <h2>Hello ${escapeHtml(donor.name)}!</h2>
+                <p>Your donation of <strong>${escapeHtml(donation.foodType)}</strong> has been requested for pickup.</p>
+                <p>Pickup service: ${escapeHtml(pickupUserName) || 'A volunteer'}</p>
                 <p>Thank you for helping reduce food waste!</p>
                 <br>
                 <p>Best regards,<br>The Feedia Team</p>
