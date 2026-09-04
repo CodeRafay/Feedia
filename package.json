@@ -36,6 +36,9 @@
     "multer": "^2.3.0",
     "nodemailer": "^9.0.6"
   },
+  "overrides": {
+    "qs": "^6.16.0"
+  },
   "engines": {
     "node": ">=14.0.0"
   },

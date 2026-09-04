@@ -226,10 +226,13 @@ router.put('/dropoffs/:id', auth(['admin']), [
         const { name, address, latitude, longitude } = req.body;
 
         const updateData = {};
-        if (name) updateData.name = name;
-        if (address) updateData.address = address;
+        if (name) updateData.name = String(name);
+        if (address) updateData.address = String(address);
         if (latitude !== undefined && longitude !== undefined) {
-            updateData.location = { latitude, longitude };
+            updateData.location = {
+                latitude: Number(latitude),
+                longitude: Number(longitude)
+            };
         }
 
         const dropOff = await DropOff.findByIdAndUpdate(
