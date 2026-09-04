@@ -4,7 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import Reviews from './Reviews';
 import axios from 'axios';
 
-jest.mock('axios');
+vi.mock('axios');
 
 describe('Reviews component', () => {
     beforeEach(() => {
@@ -13,7 +13,7 @@ describe('Reviews component', () => {
     });
 
     afterEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
         localStorage.clear();
     });
 

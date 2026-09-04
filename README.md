@@ -64,14 +64,16 @@ Feedia is a community-driven platform designed to:
 
 ### Frontend
 - **Framework:** React 18
-- **Routing:** React Router v6
+- **Build Tool:** Vite 8
+- **Testing:** Vitest + React Testing Library
+- **Routing:** React Router v7
 - **HTTP Client:** Axios
 - **Styling:** Bootstrap 5
 - **Maps:** Google Maps Embed API
 
 ## 📋 Prerequisites
 
-- Node.js v14 or higher
+- Node.js v20.19+ or v22.12+ (required by Vite 8)
 - MongoDB (local or cloud instance like MongoDB Atlas)
 - npm or yarn
 - Git
@@ -116,8 +118,8 @@ GMAIL_PASS=your-app-password
 Create a `.env` file in the `client` directory:
 
 ```env
-REACT_APP_API_URL=http://localhost:5000
-REACT_APP_GOOGLE_MAPS_API_KEY=your-google-maps-api-key
+VITE_API_URL=http://localhost:5000
+VITE_GOOGLE_MAPS_API_KEY=your-google-maps-api-key
 ```
 
 ## 💻 Running the Application
@@ -291,8 +293,8 @@ npm start
 | `CORS_ORIGIN` | No | Allowed CORS origin |
 | `GMAIL_USER` | No | Gmail for notifications |
 | `GMAIL_PASS` | No | Gmail app password |
-| `REACT_APP_API_URL` | No | API URL for frontend |
-| `REACT_APP_GOOGLE_MAPS_API_KEY` | No | Google Maps API key |
+| `VITE_API_URL` | No | API URL for frontend |
+| `VITE_GOOGLE_MAPS_API_KEY` | No | Google Maps API key |
 
 ## 🧪 Testing
 

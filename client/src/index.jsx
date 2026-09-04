@@ -1,6 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import 'bootstrap/dist/css/bootstrap.min.css';
+// Bootstrap's JS drives the navbar collapse toggle (data-bs-* attributes). The old
+// CRA landing page pulled this from a CDN; bundle it from the npm package instead.
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';

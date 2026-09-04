@@ -4,7 +4,7 @@ const SENSITIVE_HEADERS = ['Authorization', 'X-API-Key', 'X-Api-Key', 'x-api-key
 
 // Ensure we only use http(s) origins and normalize trailing slashes.
 const getSafeBaseUrl = () => {
-    const candidate = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+    const candidate = import.meta.env.VITE_API_URL || 'http://localhost:5000';
     try {
         const parsed = new URL(candidate);
         if (!parsed.protocol.startsWith('http')) {

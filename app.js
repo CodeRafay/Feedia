@@ -111,8 +111,10 @@ app.get('*', staticLimiter, (req, res) => {
     
     // Try to serve React build first
     const buildPath = path.join(__dirname, 'client', 'build', 'index.html');
-    const publicPath = path.join(__dirname, 'client', 'public', 'index.html');
-    
+    // Fallback for when the client hasn't been built yet: the static landing page
+    // (renamed from index.html so it no longer shadows the Vite-built app shell).
+    const publicPath = path.join(__dirname, 'client', 'public', 'landing.html');
+
     // Check if build exists, otherwise serve public
     res.sendFile(buildPath, (err) => {
         if (err) {

@@ -4,7 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import AdminDashboard from './AdminDashboard';
 import axios from 'axios';
 
-jest.mock('axios');
+vi.mock('axios');
 
 describe('AdminDashboard', () => {
     beforeEach(() => {
@@ -13,7 +13,7 @@ describe('AdminDashboard', () => {
     });
 
     afterEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
         localStorage.clear();
     });
 
